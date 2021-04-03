@@ -1,2 +1,4 @@
 .vscode
 .DS_Store
+/sql/heroku_eaglemotors_prod_setup.sql
+/sql/xampp_eaglemotors_prod_setup.sql
