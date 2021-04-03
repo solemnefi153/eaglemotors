@@ -135,7 +135,7 @@ INSERT INTO carclassification (classificationId, classificationName) VALUES
 
 INSERT INTO inventory (invId, invMake, invModel, invDescription, invPrice, invStock, invColor, classificationId) VALUES
 (1, 'Jeep ', 'Wrangler', 'The Jeep Wrangler is small and compact with enough power to get you where you want to go. Its great for everyday driving as well as offroading weather that be on the the rocks or in the mud!', '28045.00', 4, 'Orange', 1),
-(2, 'Ford', 'Model T', "The Ford Model T can be a bit tricky to drive. It was the first car to be put into production. You can get it in any color you want as long as it's black.", '30000.00', 2, 'Black', 2),
+(2, 'Ford', 'Model T', 'The Ford Model T can be a bit tricky to drive. It was the first car to be put into production. You can get it in any color you want as long as it s black.', '30000.00', 2, 'Black', 2),
 (3, 'Lamborghini', 'Adventador', 'This V-12 engine packs a punch in this sporty car. Make sure you wear your seatbelt and obey all traffic laws. ', '417650.00', 5, 'White', 3),
 (4, 'Monster', 'Truck', 'Most trucks are for working, this one is for fun. this beast comes with 60in tires giving you tracktions needed to jump and roll in the mud.', '150000.00', 3, 'purple', 4),
 (5, 'Mechanic', 'Special', 'Not sure where this car came from. however with a little tlc it will run as good a new.', '100.00', 200, 'Rust', 5),
@@ -146,7 +146,7 @@ INSERT INTO inventory (invId, invMake, invModel, invDescription, invPrice, invSt
 (11, 'Cadilac', 'Escalade', 'This stylin car is great for any occasion from going to the beach to meeting the president. The luxurious inside makes this car a home away from home.', '75195.00', 4, 'Black', 1),
 (12, 'GM', 'Hummer', 'Do you have 6 kids and like to go offroading? The Hummer gives you the small interiors with an engine to get you out of any muddy or rocky situation.', '58800.00', 5, 'Yellow', 5),
 (13, 'Aerocar International', 'Aerocar', 'Are you sick of rushhour trafic? This car converts into an airplane to get you where you are going fast. Only 6 of these were made, get them while they last!', '1000000.00', 6, 'Red', 2),
-(14, 'FBI', 'Survalence Van', "do you like police shows? You'll feel right at home driving this van, come complete with survalence equipments for and extra fee of $2,000 a month. ", '20000.00', 1, 'Green', 1),
+(14, 'FBI', 'Survalence Van', 'do you like police shows? You ll feel right at home driving this van, come complete with survalence equipments for and extra fee of $2,000 a month. ', '20000.00', 1, 'Green', 1),
 (15, 'Dog ', 'Car', 'Do you like dogs? Well this car is for you straight from the 90s from Aspen, Colorado we have the orginal Dog Car complete with fluffy ears.  ', '35000.00', 1, 'Brown', 2),
 (30, 'DCM', 'Delorean', '3 Cup holders\r\nSuperman doors\r\nFuzzy dice!', '1000.00', 1, 'grey', 2);
 
