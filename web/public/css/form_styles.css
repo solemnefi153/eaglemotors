@@ -1,0 +1,160 @@
+main{
+    display: grid;
+    justify-content: center;
+    grid-template-columns: auto;
+    padding:0;
+    margin: 0;
+    width: 100%;
+}
+
+.form_container{
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-bottom: 50px;
+    padding:  2rem 4rem;
+}
+
+.custom_form {
+    display: grid;
+    grid-template-columns: auto;
+    justify-content: center;
+    text-align: left;
+}
+
+.form_title{
+    text-align: center;
+    margin: 0 0 10px 0;
+    border-bottom: 1px solid var(--gray);
+    max-width: 218px;
+}
+
+.form_image{
+    max-width: 218px;
+    width: 100%;
+    padding: 10px 0;
+}
+
+.form_p{
+    max-width: 218px;
+}
+
+.form_input{
+    border: 1px solid var(--gray) ;
+    border-radius: 2px;
+    text-align: left;
+    margin: 0px;
+    width: 200px;
+    padding: 2px .5rem;
+    height :25px;
+    font-size: 16px;
+}
+
+.form_select{
+    margin: 0px;
+    width: 218px !important;
+    padding: 5px .5rem;
+    font-size: 16px;
+}
+
+.form_important_info{
+    text-align: center;
+    max-width: 218px;
+    color:red;
+}
+
+.form_textarea{
+    border: 1px solid var(--gray) ;
+    border-radius: 2px;
+    text-align: left;
+    margin: 0px;
+    width: 200px;
+    max-width: 200px;
+    padding: 5px .5rem;
+    min-height: 5rem;
+    height :auto;
+    font-size: 16px;
+}
+
+.form_readonly{
+    background-color: rgb(228, 228, 228);
+}
+
+.inputRequirements{
+    background-color: rgb(255, 243, 233);
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    color: black;
+}
+
+.imput_with_symbol{
+    display: inline-block;
+    text-align: right;
+    border: 1px solid var(--gray) ;
+    border-radius: 2px;
+    margin: 0px;
+    width: 218px;
+    line-height : 26px;
+    font-size: 16px;
+    background-color: lightgray;
+}
+
+.imput_with_symbol input{
+    border: none;
+    text-align: left;
+    margin: 0px;
+    height: 24px;
+    font-size: 16px;
+    padding: 2px .5rem;
+    width: 175px;
+}
+
+.imput_with_symbol .imput_symbol{ 
+    display: inline-block;
+    text-align: center;
+    line-height: 24px;
+    font-size: 16px;
+    padding: 0;
+    width: 20px;
+}
+
+.input_error{
+    border: 1px solid red ;
+    
+}
+.input_error:focus{
+    outline: 1px auto red; 
+}
+
+.required{
+    color: red;
+    font-size: 11px;
+}
+
+.custom_fieldset{
+    padding: 0;
+    text-align: center;
+    border-top: 1px solid gray;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+}
+
+.primary_btn{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.secondary_btn{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 380px){
+    .form_container{
+        border: none;
+        box-shadow: none;
+        padding: 0;
+    }
+}
