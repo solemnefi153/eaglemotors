@@ -1,6 +1,6 @@
 <?php 
 //Proxy connection to the heroku  database 
-    function databaseConnect(){
+    function eaglemotorsConnect(){
         try
         {
             $dbUrl = getenv('DATABASE_URL');
