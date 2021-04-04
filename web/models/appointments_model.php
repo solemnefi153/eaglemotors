@@ -50,8 +50,13 @@
     function getClientUpcomingAppointments($client_id){
         // Create a connection object using the eaglemotors connection function
         $db = eaglemotorsConnect();
-        // The SQL statement
-        $sql = 'SELECT * FROM  appointments JOIN inventory ON appointments.inv_id = inventory.inv_id  WHERE client_id = :client_id and appointment_date >= CURDATE();';
+        // The SQL statement depending on the database
+        if(getenv('ENVIRONMENT') == 'production'){
+            $sql = 'SELECT * FROM  appointments JOIN inventory ON appointments.inv_id = inventory.inv_id  WHERE client_id = :client_id and appointment_date >= CURRENT_DATE;';
+        }
+        else{
+            $sql = 'SELECT * FROM  appointments JOIN inventory ON appointments.inv_id = inventory.inv_id  WHERE client_id = :client_id and appointment_date >= CURDATE();';
+        }
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':client_id', $client_id, PDO::PARAM_INT);
@@ -67,8 +72,13 @@
     function getAllUpcomingAppointments(){
         // Create a connection object using the eaglemotors connection function
         $db = eaglemotorsConnect();
-        // The SQL statement
-        $sql = 'SELECT * FROM  appointments JOIN inventory ON appointments.inv_id = inventory.inv_id WHERE appointment_date >= CURDATE();';
+         // The SQL statement depending on the database
+         if(getenv('ENVIRONMENT') == 'production'){
+            $sql = 'SELECT * FROM  appointments JOIN inventory ON appointments.inv_id = inventory.inv_id WHERE appointment_date >= CURRENT_DATE;';
+        }
+        else{
+            $sql = 'SELECT * FROM  appointments JOIN inventory ON appointments.inv_id = inventory.inv_id WHERE appointment_date >= CURDATE();';
+        }
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         $stmt->execute();
@@ -83,8 +93,13 @@
     function getAllExpiredAppointments(){
         // Create a connection object using the eaglemotors connection function
         $db = eaglemotorsConnect();
-        // The SQL statement
-        $sql = 'SELECT * FROM  appointments JOIN inventory ON appointments.inv_id = inventory.inv_id WHERE appointment_date < CURDATE();';
+        // The SQL statement depending on the database
+        if(getenv('ENVIRONMENT') == 'production'){
+            $sql = 'SELECT * FROM  appointments JOIN inventory ON appointments.inv_id = inventory.inv_id WHERE appointment_date < CURRENT_DATE;';
+        }
+        else{
+            $sql = 'SELECT * FROM  appointments JOIN inventory ON appointments.inv_id = inventory.inv_id WHERE appointment_date < CURDATE();';
+        }
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         $stmt->execute();

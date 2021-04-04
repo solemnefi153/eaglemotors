@@ -81,12 +81,12 @@
         $stmt->closeCursor();
         // Return the result that was found, if any. 
         return $imageMatch; 
-   }
+    }
     //Queries for the primary image of a vehicle 
     function getVehiclePrimaryImage($inv_id){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'SELECT img_path, img_name FROM images JOIN inventory ON images.inv_id = inventory.inv_id WHERE inventory.inv_id = :inv_id AND img_primary = 1 AND img_path NOT LIKE "%-tn%";';
+        $sql = "SELECT img_path, img_name FROM images JOIN inventory ON images.inv_id = inventory.inv_id WHERE inventory.inv_id = :inv_id AND img_primary = 1 AND img_path NOT LIKE '%-tn%';";
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':inv_id', $inv_id, PDO::PARAM_INT);
@@ -103,7 +103,7 @@
     function getVehiclePrimaryImageTn($inv_id){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'SELECT img_path, img_name FROM images JOIN inventory ON images.inv_id = inventory.inv_id WHERE inventory.inv_id = :inv_id AND img_primary = 1 AND img_path LIKE "%-tn%";';
+        $sql = "SELECT img_path, img_name FROM images JOIN inventory ON images.inv_id = inventory.inv_id WHERE inventory.inv_id = :inv_id AND img_primary = 1 AND img_path LIKE '%-tn%';";
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':inv_id', $inv_id, PDO::PARAM_INT);
@@ -120,7 +120,7 @@
     function getVehicleThumbnails($inv_id){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'SELECT img_path, img_name FROM images JOIN inventory ON images.inv_id = inventory.inv_id WHERE inventory.inv_id = :inv_id  AND img_path LIKE "%tn%";';
+        $sql = "SELECT img_path, img_name FROM images JOIN inventory ON images.inv_id = inventory.inv_id WHERE inventory.inv_id = :inv_id  AND img_path LIKE '%-tn%';";
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':inv_id', $inv_id, PDO::PARAM_INT);
