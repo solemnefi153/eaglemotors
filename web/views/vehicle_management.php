@@ -5,7 +5,7 @@
         exit;
     }
     //Check that the user has proper rights
-    if ($_SESSION['clientData']['clientLevel'] < 2) {
+    if ($_SESSION['clientData']['client_level'] < 2) {
     header("location: " . ROOT_URI);
     exit;
     }
@@ -17,6 +17,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel='stylesheet' href='<?php echo ROOT_URI; ?>public/css/general_styles.css' media='screen'>
         <link rel='stylesheet' href='<?php echo ROOT_URI; ?>public/css/vehicle_management.css' media='screen'>
+        <link rel='stylesheet' href='<?php echo ROOT_URI; ?>public/css/custom_table_styles.css' media='screen'>
         <link href="<?php echo ROOT_URI; ?>public/images/site/favicon.ico" rel="icon" type="image/x-icon" />
     </head>
     <body>
@@ -41,10 +42,10 @@
                 if (isset($classifications)) { 
                     $html =  '<h2>Manage vehicles by classification</h2>'; 
                     $html .= '<p>Choose a classification to see those vehicles</p>'; 
-                    $html .= "<select  class='custom_select' name='classificationId' id='classificationList' >";
+                    $html .= "<select  class='custom_select' name='classification_id' id='classificationList' >";
                     $html .= "<option   disabled value='' selected> -- Select classification -- </option>";
                     foreach ($classifications as $classification) {
-                        $html .= "<option  value='$classification[classificationId]' >$classification[classificationName]</option>";
+                        $html .= "<option  value='$classification[classification_id]' >$classification[classification_name]</option>";
                     }
                     $html .= "<select>";
                     echo $html;
@@ -55,7 +56,7 @@
                     <strong>JavaScript Must Be Enabled to Use this Page.</strong>
                 </p>
             </noscript>
-            <table id="inventoryDisplay"></table>
+            <div id="inventoryDisplay"></div>
             </main>
             <?php  require ABS_ROOT_FILE_PATH . '/views/snipets/footer.php' ?>
         </div>

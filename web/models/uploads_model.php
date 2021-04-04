@@ -1,19 +1,19 @@
 <?php 
-    /*
-        This is the Image Upload model
-    */
+    /*************************************************/
+    /*        This is the Image Upload model         */
+    /*************************************************/
     // Add image information to the database table
-    function storeImages($imgPath, $invId, $imgName, $imgPrimary) {
+    function storeImages($img_path, $inv_id, $img_name, $img_primary) {
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'INSERT INTO images (invId, imgPath, imgName, imgPrimary) VALUES (:invId, :imgPath, :imgName, :imgPrimary)';
+        $sql = 'INSERT INTO images (inv_id, img_path, img_name, img_primary) VALUES (:inv_id, :img_path, :img_name, :img_primary)';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // Store the full size image information
-        $stmt->bindValue(':invId', $invId, PDO::PARAM_INT);
-        $stmt->bindValue(':imgPath', $imgPath, PDO::PARAM_STR);
-        $stmt->bindValue(':imgName', $imgName, PDO::PARAM_STR);
-        $stmt->bindValue(':imgPrimary', $imgPrimary, PDO::PARAM_INT);
+        $stmt->bindValue(':inv_id', $inv_id, PDO::PARAM_INT);
+        $stmt->bindValue(':img_path', $img_path, PDO::PARAM_STR);
+        $stmt->bindValue(':img_name', $img_name, PDO::PARAM_STR);
+        $stmt->bindValue(':img_primary', $img_primary, PDO::PARAM_INT);
         // Run the query 
         $stmt->execute();
         //Ask how many rows were changed
@@ -23,13 +23,13 @@
         if( $rowsChanged == 1){
             // Make and store the thumbnail image information
             // Change name in path
-            $imgPath = makeThumbnailName($imgPath);
+            $img_path = makeThumbnailName($img_path);
             // Change name in file name
-            $imgName = makeThumbnailName($imgName);
-            $stmt->bindValue(':invId', $invId, PDO::PARAM_INT);
-            $stmt->bindValue(':imgPath', $imgPath, PDO::PARAM_STR);
-            $stmt->bindValue(':imgName', $imgName, PDO::PARAM_STR);
-            $stmt->bindValue(':imgPrimary', $imgPrimary, PDO::PARAM_INT);
+            $img_name = makeThumbnailName($img_name);
+            $stmt->bindValue(':inv_id', $inv_id, PDO::PARAM_INT);
+            $stmt->bindValue(':img_path', $img_path, PDO::PARAM_STR);
+            $stmt->bindValue(':img_name', $img_name, PDO::PARAM_STR);
+            $stmt->bindValue(':img_primary', $img_primary, PDO::PARAM_INT);
             // Run the query 
             $stmt->execute();
             //Ask how many rows were changed
@@ -53,8 +53,7 @@
     function getImages() {
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        //I need to change this to focus only on the images
-        $sql = 'SELECT imgId, imgPath, imgName, imgDate, inventory.invId, invMake, invModel FROM images JOIN inventory ON images.invId = inventory.invId';
+        $sql = 'SELECT img_id, img_path, img_name, img_date, inventory.inv_id, inv_make, inv_model FROM images JOIN inventory ON images.inv_id = inventory.inv_id';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // Run the query 
@@ -66,14 +65,31 @@
         // Return the rows that we got from the query
         return $imageArray; 
     }
-    //Queries for the primary image of a vehicle 
-    function getVehiclePrimaryImage($invId){
+    // Check for an existing image
+    function checkExistingImage($img_name){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'SELECT imgPath, imgName FROM images JOIN inventory ON images.invId = inventory.invId WHERE inventory.invId = :invId AND imgPrimary = 1 AND imgPath NOT LIKE "%-tn%";';
+        $sql = "SELECT img_name FROM images WHERE img_name = :img_name";
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':invId', $invId, PDO::PARAM_INT);
+        $stmt->bindValue(':img_name', $img_name, PDO::PARAM_STR);
+        // Run the query 
+        $stmt->execute();
+        // Count how many rows were changed
+        $imageMatch = $stmt->fetch(); 
+        // Close the database interaction
+        $stmt->closeCursor();
+        // Return the result that was found, if any. 
+        return $imageMatch; 
+   }
+    //Queries for the primary image of a vehicle 
+    function getVehiclePrimaryImage($inv_id){
+        // Create a connection object from the eaglemotors connection function
+        $db = eaglemotorsConnect(); 
+        $sql = 'SELECT img_path, img_name FROM images JOIN inventory ON images.inv_id = inventory.inv_id WHERE inventory.inv_id = :inv_id AND img_primary = 1 AND img_path NOT LIKE "%-tn%";';
+        // Create the prepared statement using the eaglemotors connection
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':inv_id', $inv_id, PDO::PARAM_INT);
         // Run the query 
         $stmt->execute();
         // Grab the row that was returnded from the query, if any
@@ -84,13 +100,13 @@
         return $imageData; 
     }
     //Queries for the primary image of a vehicle 
-    function getVehiclePrimaryImageTn($invId){
+    function getVehiclePrimaryImageTn($inv_id){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'SELECT imgPath, imgName FROM images JOIN inventory ON images.invId = inventory.invId WHERE inventory.invId = :invId AND imgPrimary = 1 AND imgPath LIKE "%-tn%";';
+        $sql = 'SELECT img_path, img_name FROM images JOIN inventory ON images.inv_id = inventory.inv_id WHERE inventory.inv_id = :inv_id AND img_primary = 1 AND img_path LIKE "%-tn%";';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':invId', $invId, PDO::PARAM_INT);
+        $stmt->bindValue(':inv_id', $inv_id, PDO::PARAM_INT);
         // Run the query 
         $stmt->execute();
         // Grab the row that was returnded from the query, if any
@@ -101,13 +117,13 @@
         return $imageData; 
     }
     //Queries for all the thumbnail images of a vehicle
-    function getVehicleThumbnails($invId){
+    function getVehicleThumbnails($inv_id){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'SELECT imgPath, imgName FROM images JOIN inventory ON images.invId = inventory.invId WHERE inventory.invId = :invId  AND imgPath LIKE "%tn%";';
+        $sql = 'SELECT img_path, img_name FROM images JOIN inventory ON images.inv_id = inventory.inv_id WHERE inventory.inv_id = :inv_id  AND img_path LIKE "%tn%";';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':invId', $invId, PDO::PARAM_INT);
+        $stmt->bindValue(':inv_id', $inv_id, PDO::PARAM_INT);
         // Run the query 
         $stmt->execute();
         // Grab all the rows that were returnded from the query
@@ -118,13 +134,13 @@
         return $imageArray; 
     }
     // Delete image information from the images table
-    function deleteImage($imgId) {
+    function deleteImage($img_id) {
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'DELETE FROM images WHERE imgId = :imgId';
+        $sql = 'DELETE FROM images WHERE img_id = :img_id';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':imgId', $imgId, PDO::PARAM_INT);
+        $stmt->bindValue(':img_id', $img_id, PDO::PARAM_INT);
         // Run the query 
         $stmt->execute();
         // Count how many rows were changed
@@ -134,21 +150,5 @@
         // Return the rows that we got from the query
         return $result; 
    }
-   // Check for an existing image
-    function checkExistingImage($imgName){
-        // Create a connection object from the eaglemotors connection function
-        $db = eaglemotorsConnect(); 
-        $sql = "SELECT imgName FROM images WHERE imgName = :name";
-        // Create the prepared statement using the eaglemotors connection
-        $stmt = $db->prepare($sql);
-        $stmt->bindValue(':name', $imgName, PDO::PARAM_STR);
-        // Run the query 
-        $stmt->execute();
-        // Count how many rows were changed
-        $imageMatch = $stmt->fetch(); 
-        // Close the database interaction
-        $stmt->closeCursor();
-        // Return the result that was found, if any. 
-        return $imageMatch; 
-   }
+ 
 ?>

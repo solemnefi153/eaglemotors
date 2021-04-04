@@ -18,26 +18,29 @@
                     <form class='custom_form' <?php if(isset($noSubmit)) {echo '';} else { echo "method='POST' action='" . ROOT_URI . "controllers/appointments/'";} ?>>
                         <h1 class='form_title'>Request a test drive</h1>
                         <label for='vehicle'>Vehicle</label>
-                        <input type="text" class="form_input"  id='vehicle' disabled  name='makeAndModel' value="<?php if(isset($vehicleInfo['invMake'])) echo "$vehicleInfo[invMake] $vehicleInfo[invModel]";?>">
-                        <input type='hidden' name='invId' value='<?php if(isset($invId)) echo $invId;?>' >
-                        <img class='form_image' src='<?php if(isset($vehicleInfo['imgPath'])) echo ROOT_URI . $vehicleInfo['imgPath'];?>' title='<?php if(isset($vehicleInfo['invMake'])) echo "$vehicleInfo[invMake] $vehicleInfo[invModel] image";?>' alt='<?php if(isset($vehicleInfo['invMake'])) echo "$vehicleInfo[invMake] $vehicleInfo[invModel] image at eaglemotors.com";?>'> 
-                        <label for='clientFirstname'>Your name</label>
-                        <input type="text" class="form_input <?php if(isset($clientFirstnameErr)) echo $clientFirstnameErr; ?>" id="clientFirstname"  name="clientFirstname"   value='<?php if(isset($_SESSION['clientData'])){ echo $_SESSION['clientData']['clientFirstname']; } else if(isset($appointmentInfo['clientFirstname'])) { echo $appointmentInfo['clientFirstname']; }?>' <?php if(isset($_SESSION['clientData'])) {echo " disabled";} else {echo "required";} ?> >
+                        <input type="text" class="form_input"  id='vehicle' disabled  value="<?php if(isset($vehicleInfo['inv_make'])) echo "$vehicleInfo[inv_make] $vehicleInfo[inv_model]";?>">
+                        <input type='hidden' name='inv_id' value='<?php if(isset($inv_id)) echo $inv_id;?>' >
+                        <?php if (!empty($vehicleMainTnImage)){
+                            echo "<img class='form_image' src='" . ROOT_URI . "$vehicleMainTnImage[img_path]' title='$vehicleMainTnImage[img_name] image at eaglemotors.com'> ";
+                        }
+                        ?>
+                        <label for='client_first_name'>Your name</label>
+                        <input type="text" class="form_input <?php if(isset($clientFirstnameErr)) echo $clientFirstnameErr; ?>" id="client_first_name"  name="client_first_name"   value='<?php if(isset($_SESSION['clientData'])){ echo $_SESSION['clientData']['client_first_name']; } else if(isset($appointmentInfo['client_first_name'])) { echo $appointmentInfo['client_first_name']; }?>' <?php if(isset($_SESSION['clientData'])) {echo " disabled";} else {echo "required";} ?>  pattern="^[a-zA-Z ,.'-]+$">
                         <?php 
                             if(isset($_SESSION['clientData'])){
-                                echo '<input type="hidden"   name="clientFirstname"   value="' . $_SESSION['clientData']['clientFirstname'] . '" >';
+                                echo '<input type="hidden"   name="client_first_name"   value="' . $_SESSION['clientData']['client_first_name'] . '" >';
                             }
                         ?>
-                        <input type="hidden"  id="clientId"  name="clientId"   value='<?php if(isset($_SESSION['clientData'])) echo $_SESSION['clientData']['clientId']; ?> '>
-                        <label for='appointmentDate'>Date</label>
-                        <input type="date" class="form_input <?php if(isset($appointmentDateErr)) echo $appointmentDateErr; ?>" id="appointmentDate"  name="appointmentDate"   value='<?php if(isset($appointmentInfo['appointmentDate'])) echo $appointmentInfo['appointmentDate'];?>' min="<?php echo date("Y-m-d");?>" max="<?php echo date('Y-m-d', strtotime("+15 day"));?>" required>
+                        <input type="hidden"  id="client_id"  name="client_id"   value='<?php if(isset($_SESSION['clientData'])) echo $_SESSION['clientData']['client_id']; ?> '>
+                        <label for='appointment_date'>Date</label>
+                        <input type="date" class="form_input <?php if(isset($appointmentDateErr)) echo $appointmentDateErr; ?>" id="appointment_date"  name="appointment_date"   value='<?php if(isset($appointmentInfo['appointment_date'])) echo $appointmentInfo['appointment_date'];?>' min="<?php echo date("Y-m-d");?>" max="<?php echo date('Y-m-d', strtotime("+15 day"));?>" required>
                         <span id='dateWeekdayAlert' class="inputRequirements" >Date must be during weekdays</span>
-                        <label for='appointmentTime'>Time</label>
-                        <input type="time" class="form_input <?php if(isset($appointmentTimeErr)) echo $appointmentTimeErr; ?>" id="appointmentTime"  name="appointmentTime"   value='<?php if(isset($appointmentInfo['appointmentTime'])) echo $appointmentInfo['appointmentTime'];?>' min='09:00' max='17:00' required>
+                        <label for='appointment_time'>Time</label>
+                        <input type="time" class="form_input <?php if(isset($appointmentTimeErr)) echo $appointmentTimeErr; ?>" id="appointment_time"  name="appointment_time"   value='<?php if(isset($appointmentInfo['appointment_time'])) echo $appointmentInfo['appointment_time'];?>' min='09:00' max='17:00' required>
                         <span  class="inputRequirements" >Available hours 9:00AM - 5:00PM</span>
                         <p class='form_p'>Type your phone number if you want to receive text reminders</p>
-                        <label for='clientPhoneNumber'>Phone number</label>
-                        <input type="tel" class="form_input <?php if(isset($clientPhoneNumberErr)) echo $clientPhoneNumberErr; ?>" id="clientPhoneNumber"  name="clientPhoneNumber"   value='<?php if(isset($appointmentInfo['clientPhoneNumber'])) echo $appointmentInfo['clientPhoneNumber'];?>' pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" > 
+                        <label for='client_phone_number'>Phone number</label>
+                        <input type="tel" class="form_input <?php if(isset($clientPhoneNumberErr)) echo $clientPhoneNumberErr; ?>" id="client_phone_number"  name="client_phone_number"   value='<?php if(isset($appointmentInfo['client_phone_number'])) echo $appointmentInfo['client_phone_number'];?>' pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" > 
                         <div class='inputRequirements'>
                             <span>Tel format: 123-456-7899</span>
                         </div>

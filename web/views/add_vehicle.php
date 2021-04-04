@@ -5,7 +5,7 @@
         exit;
     }
     //Check that the user has proper rights
-    if ($_SESSION['clientData']['clientLevel'] < 2) {
+    if ($_SESSION['clientData']['client_level'] < 2) {
     header('location: ' .  ROOT_URI);
     exit;
     }
@@ -29,54 +29,58 @@
                     <form class='custom_form' method='POST' action='<?php echo ROOT_URI; ?>controllers/vehicles/'>
                         <h1 class='form_title'>Add a vehicle</h1>
                         <div>
-                            <label for='invMake'>Make</label>
+                            <label for='inv_make'>Make</label>
                             <span class='required'>*</span>
                         </div>
-                        <input type="text" class="form_input <?php if(isset($invMakeErr)) echo $invMakeErr;?>" id="invMake"  name="invMake" value='<?php if(isset($newVehicle['invMake'])) echo $newVehicle['invMake'];?>' required>
+                        <input type="text" class="form_input <?php if(isset($invMakeErr)) echo $invMakeErr;?>" id="inv_make"  name="inv_make" value='<?php if(isset($newVehicle['inv_make'])) echo $newVehicle['inv_make'];?>' required>
                         <div>
-                            <label for='invModel'>Model</label>
+                            <label for='inv_model'>Model</label>
                             <span class='required'>*</span>
                         </div>
-                        <input type="text" class="form_input <?php if(isset($invModelErr)) echo $invModelErr; ?>" id="invModel"  name="invModel"  value='<?php if(isset($newVehicle['invModel'])) echo $newVehicle['invModel'];?>' required>  
+                        <input type="text" class="form_input <?php if(isset($invModelErr)) echo $invModelErr; ?>" id="inv_model"  name="inv_model"  value='<?php if(isset($newVehicle['inv_model'])) echo $newVehicle['inv_model'];?>' required>  
                         <div>
-                            <label for='invDescription'>Description</label>
+                            <label for='inv_description'>Description</label>
                             <span class='required'>*</span>
                         </div>
-                        <textarea  class=" form_textarea <?php if(isset($invDescriptionErr)) echo $invDescriptionErr; ?>" id="invDescription"  name="invDescription"  required><?php if(isset($newVehicle['invDescription'])) echo $newVehicle['invDescription'];?></textarea>
+                        <textarea  class=" form_textarea <?php if(isset($invDescriptionErr)) echo $invDescriptionErr; ?>" id="inv_description"  name="inv_description"  required><?php if(isset($newVehicle['inv_description'])) echo $newVehicle['inv_description'];?></textarea>
                         <div>
-                            <label for='invPrice'>Price</label>
+                            <label for='inv_price'>Price</label>
                             <span class='required'>*</span>
                         </div>
                         <div class='imput_with_symbol <?php if(isset($invPriceErr)) echo $invPriceErr; ?>'>
                             <div class='imput_symbol'>$</div>
-                            <input type="text" min="0" id="invPrice" name="invPrice"  value='<?php if(isset($newVehicle['invPrice'])) echo $newVehicle['invPrice'];?>' placeholder='00.00' pattern='(\d+\.\d{1,2})' required  >
+                            <input type="text" min="0" id="inv_price" name="inv_price"  value='<?php if(isset($newVehicle['inv_price'])) echo $newVehicle['inv_price'];?>' placeholder='00.00' pattern='(\d+\.\d{1,2})' required  >
+                        </div>
+                        <div class='inputRequirements'>
+                            <span>Provide 2 decimals</span>
+                            <span>Do not add comas</span>
                         </div>
                         <div>
-                            <label for='invStock'>In Stock</label>
+                            <label for='inv_stock'>In Stock</label>
                             <span class='required'>*</span>
                         </div>
-                        <input type="number" min="0" class="form_input <?php if(isset($invStockErr)) echo $invStockErr; ?>" id="invStock" name="invStock"  value='<?php if(isset($newVehicle['invStock'])) echo $newVehicle['invStock'];?>' required>
+                        <input type="number" min="0" class="form_input <?php if(isset($invStockErr)) echo $invStockErr; ?>" id="inv_stock" name="inv_stock"  value='<?php if(isset($newVehicle['inv_stock'])) echo $newVehicle['inv_stock'];?>' required>
                         <div>
-                            <label for='invColor'>Color</label>
+                            <label for='inv_color'>Color</label>
                             <span class='required'>*</span>
                         </div>
-                        <input type="text" class="form_input <?php if(isset($invColorErr)) echo $invColorErr; ?>" id="invColor" name="invColor"  value='<?php if(isset($newVehicle['invColor'])) echo $newVehicle['invColor'];?>' required>
+                        <input type="text" class="form_input <?php if(isset($invColorErr)) echo $invColorErr; ?>" id="inv_color" name="inv_color"  value='<?php if(isset($newVehicle['inv_color'])) echo $newVehicle['inv_color'];?>' required>
                         <div>
-                            <label for='classificationId'>Classification</label>
+                            <label for='classification_id'>Classification</label>
                             <span class='required'>*</span>
                         </div>
-                        <select class='form_select <?php if(isset($classificationIdErr)) echo $classificationIdErr; ?>' id="classificationId" name="classificationId" required>
+                        <select class='form_select <?php if(isset($classificationIdErr)) echo $classificationIdErr; ?>' id="classification_id" name="classification_id" required>
                             <?php 
                                 if(isset($classifications)){
-                                    echo "<option   disabled value=''". (isset($newVehicle['classificationId']) ? '' : 'selected') . "> -- Select classification -- </option>";
+                                    echo "<option   disabled value=''". (isset($newVehicle['classification_id']) ? '' : 'selected') . "> -- Select classification -- </option>";
                                     foreach ($classifications as $classification) {
-                                        echo "<option  value='" . $classification['classificationId']. "'";
-                                        if(isset($newVehicle['classificationId'])){
-                                            if($newVehicle['classificationId'] == $classification['classificationId']){
+                                        echo "<option  value='" . $classification['classification_id']. "'";
+                                        if(isset($newVehicle['classification_id'])){
+                                            if($newVehicle['classification_id'] == $classification['classification_id']){
                                                 echo 'selected ';
                                             }
                                         }
-                                        echo ">$classification[classificationName]</option>";
+                                        echo ">$classification[classification_name]</option>";
                                     }
                                 }
                                 else{

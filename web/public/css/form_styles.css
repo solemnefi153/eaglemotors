@@ -81,7 +81,7 @@ main{
 }
 
 .inputRequirements{
-    background-color: rgb(255, 243, 233);
+    background-color: rgba(231, 231, 231, 0.596);
     font-size: 11px;
     display: flex;
     flex-direction: column;

@@ -17,25 +17,25 @@
                     <form class='custom_form' method='POST' action='<?php echo ROOT_URI; ?>controllers/accounts/'>
                         <h1 class='form_title'>Register</h1>
                         <div>
-                            <label for='clientFirstname'>First Name</label>
+                            <label for='client_first_name'>First Name</label>
                             <span class='required'>*</span>
                         </div>
-                        <input type="text" class="form_input <?php if(isset($firstNameErr)) echo $firstNameErr; ?>" id="clientFirstname"  name="clientFirstname" value='<?php if(isset($clientFirstname)) echo $clientFirstname;?>' required>
+                        <input type="text" class="form_input <?php if(isset($firstNameErr)) echo $firstNameErr; ?>" id="client_first_name"  name="client_first_name" value='<?php if(isset($client_first_name)) echo $client_first_name;?>' pattern="^[a-zA-Z ,.'-]+$" required>
                         <div>
-                            <label for='clientLastname'>Last Name</label>
+                            <label for='client_last_name'>Last Name</label>
                             <span class='required'>*</span>
                         </div>
-                        <input type="text" class="form_input <?php if(isset($lastNameErr)) echo $lastNameErr; ?>" id="clientLastname"  name="clientLastname"  value='<?php if(isset($clientLastname)) echo $clientLastname;?>' required>  
+                        <input type="text" class="form_input <?php if(isset($lastNameErr)) echo $lastNameErr; ?>" id="client_last_name"  name="client_last_name"  value='<?php if(isset($client_last_name)) echo $client_last_name;?>' pattern="^[a-zA-Z ,.'-]+$" required>  
                         <div>
-                            <label for='clientEmail'>Email Address</label>
+                            <label for='client_email'>Email Address</label>
                             <span class='required'>*</span>
                         </div>
-                        <input type="email" class="form_input <?php if(isset($emailErr)) echo $emailErr; ?>" id="clientEmail"  name="clientEmail"  value='<?php if(isset($clientEmail)) echo $clientEmail;?>' required>
+                        <input type="email" class="form_input <?php if(isset($emailErr)) echo $emailErr; ?>" id="client_email"  name="client_email"  value='<?php if(isset($client_email)) echo $client_email;?>' required>
                         <div>
-                            <label for='clientPassword'>Password</label>
+                            <label for='client_password'>Password</label>
                             <span class='required'>*</span>
                         </div>
-                        <input type="password" class="form_input <?php if(isset($passwordErr)) echo $passwordErr; ?>" id="clientPassword"  name="clientPassword"  required
+                        <input type="password" class="form_input <?php if(isset($passwordErr)) echo $passwordErr; ?>" id="client_password"  name="client_password"  required
                         pattern="(?=^.{8,}$)(?=.*\d)(?=.*\W+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
                         <div class='inputRequirements'>
                             <span>Passwords should have:</span>

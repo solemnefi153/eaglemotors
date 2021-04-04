@@ -30,17 +30,17 @@
         //Check credentials and sets the necesary session variables
         case 'logIntoAccount':
             // Filter and store the data
-            $clientEmail = filter_input(INPUT_POST, 'clientEmail', FILTER_SANITIZE_STRING);
-            $clientPassword = filter_input(INPUT_POST, 'clientPassword', FILTER_SANITIZE_EMAIL);
-            $clientEmail = checkEmail($clientEmail);
-            $checkPassword = checkPassword($clientPassword);
+            $client_email = filter_input(INPUT_POST, 'client_email', FILTER_SANITIZE_STRING);
+            $client_password = filter_input(INPUT_POST, 'client_password', FILTER_SANITIZE_EMAIL);
+            $client_email = checkEmail($client_email);
+            $checkPassword = checkPassword($client_password);
             //Track input  errors
             $emailErr = $passwordErr = "";
             // Check for missing data
-            if( empty($clientEmail) || empty($checkPassword)){
+            if( empty($client_email) || empty($checkPassword)){
                 $message = 'Please provide a valid email address and password';
                 $notificationType = 'error_message';
-                $emailErr = empty($clientEmail) ? ' input_error' : "";
+                $emailErr = empty($client_email) ? ' input_error' : "";
                 $passwordErr = empty($checkPassword) ? ' input_error' : "";
                 // Get the array of classifications. This is needed for almost every view
                 $classifications = getClassifications();
@@ -50,12 +50,12 @@
             }
             // A valid password exists, proceed with the login process
             // Query the client data based on the email address
-            $clientData = getClient($clientEmail);
-            //Check that there is a user in the database whose clientEmail matches the one passed to this case
+            $clientData = getClient($client_email);
+            //Check that there is a user in the database whose client_email matches the one passed to this case
             $matchedPassword = false;
             if(count($clientData) > 1){
                 // Compare the password just submitted against the  password stored in the database
-                $matchedPassword = password_verify($clientPassword, $clientData['clientPassword']);
+                $matchedPassword = password_verify($client_password, $clientData['client_password']);
             }
             // If the hashes don't match create an error and return to the login view
             if(!$matchedPassword) {
@@ -106,21 +106,23 @@
         //Verifies input and creates a new user in the database
         case 'register':
             // Filter and store the data
-            $clientFirstname = filter_input(INPUT_POST, 'clientFirstname', FILTER_SANITIZE_STRING);
-            $clientLastname = filter_input(INPUT_POST, 'clientLastname', FILTER_SANITIZE_STRING);
-            $clientEmail = filter_input(INPUT_POST, 'clientEmail', FILTER_SANITIZE_EMAIL);
-            $clientPassword = filter_input(INPUT_POST, 'clientPassword', FILTER_SANITIZE_STRING);
-            $clientEmail = checkEmail($clientEmail);
-            $checkPassword = checkPassword($clientPassword);
+            $client_first_name = filter_input(INPUT_POST, 'client_first_name', FILTER_SANITIZE_STRING);
+            $client_last_name = filter_input(INPUT_POST, 'client_last_name', FILTER_SANITIZE_STRING);
+            $client_email = filter_input(INPUT_POST, 'client_email', FILTER_SANITIZE_EMAIL);
+            $client_password = filter_input(INPUT_POST, 'client_password', FILTER_SANITIZE_STRING);
+            $client_email = checkEmail($client_email);
+            $checkPassword = checkPassword($client_password);
+            $checkName = validateNameOrLastName($client_first_name);
+            $checkLastName = validateNameOrLastName($client_last_name);
             //Track input  errors
             $firstNameErr = $lastNameErr = $emailErr = $passwordErr = "";
             // Check for missing data
-            if(empty($clientFirstname) || empty($clientLastname) || empty($clientEmail) || empty($checkPassword)){
+            if(empty($checkName) || empty($checkLastName) || empty($client_email) || empty($checkPassword)){
                 $message = 'One or more fields are missing or invalid';
                 $notificationType = 'error_message';
-                $firstNameErr = empty($clientFirstname) ? ' input_error' : "";
-                $lastNameErr = empty($clientLastname) ? ' input_error' : "";
-                $emailErr = empty($clientEmail) ? ' input_error' : "";
+                $firstNameErr = empty($checkName) ? ' input_error' : "";
+                $lastNameErr = empty($checkLastName) ? ' input_error' : "";
+                $emailErr = empty($client_email) ? ' input_error' : "";
                 $passwordErr = empty($checkPassword) ? ' input_error' : "";
                 // Get the array of classifications. This is needed for almost every view
                 $classifications = getClassifications();
@@ -129,7 +131,7 @@
                 exit; 
             }
             //Check if the email is used by another account
-            $clientData = getClient($clientEmail);
+            $clientData = getClient($client_email);
             //Check if a client with that email was found
             if(!empty($clientData)){
                 $message = 'Email already exist. Please sign in with your account';
@@ -142,12 +144,12 @@
                 exit; 
             }
             // Hash the checked password
-            $hashedPassword = password_hash($clientPassword, PASSWORD_DEFAULT); 
+            $hashedPassword = password_hash($client_password, PASSWORD_DEFAULT); 
             // Send the data to the model
-            $regOutcome = regClient($clientFirstname, $clientLastname, $clientEmail, $hashedPassword);
+            $regOutcome = regClient($client_first_name, $client_last_name, $client_email, $hashedPassword);
             // Check and report the result
             if($regOutcome === 1){
-                $_SESSION['message'] = "Thanks for registering $clientFirstname. Please use your email and password to login.";
+                $_SESSION['message'] = "Thanks for registering $client_first_name. Please use your email and password to login.";
                 $_SESSION['notificationType'] = 'success_message';
                 //Redirect to the default case of the accounts controller to render the admin view
                 header('Location: ' . ROOT_URI . 'controllers/accounts/');
@@ -168,9 +170,9 @@
             //Check if the session is active 
             if(isset($_SESSION['clientData'])){
                 //Set  necesary  variables for the view
-                $clientFirstname = $_SESSION['clientData']['clientFirstname'];
-                $clientLastname = $_SESSION['clientData']['clientLastname'];
-                $clientEmail = $_SESSION['clientData']['clientEmail'];
+                $client_first_name = $_SESSION['clientData']['client_first_name'];
+                $client_last_name = $_SESSION['clientData']['client_last_name'];
+                $client_email = $_SESSION['clientData']['client_email'];
                 // Get the array of classifications. This is needed for almost every view
                 $classifications = getClassifications();
                 //Render the client update view
@@ -194,19 +196,21 @@
                 exit;
             }
             // Filter and store the data
-            $clientFirstname = filter_input(INPUT_POST, 'clientFirstname', FILTER_SANITIZE_STRING);
-            $clientLastname = filter_input(INPUT_POST, 'clientLastname', FILTER_SANITIZE_STRING);
-            $clientEmail = filter_input(INPUT_POST, 'clientEmail', FILTER_SANITIZE_EMAIL);
-            $clientEmail = checkEmail($clientEmail);
+            $client_first_name = filter_input(INPUT_POST, 'client_first_name', FILTER_SANITIZE_STRING);
+            $client_last_name = filter_input(INPUT_POST, 'client_last_name', FILTER_SANITIZE_STRING);
+            $client_email = filter_input(INPUT_POST, 'client_email', FILTER_SANITIZE_EMAIL);
+            $client_email = checkEmail($client_email);
+            $checkName = validateNameOrLastName($client_first_name);
+            $checkLastName = validateNameOrLastName($client_last_name);
             //Track input  errors
             $firstNameErr = $lastNameErr = $emailErr =  "";
             // Check for missing data
-            if(empty($clientFirstname) || empty($clientLastname) || empty($clientEmail)){
+            if(empty($checkName) || empty($checkLastName) || empty($client_email)){
                 $message = 'One or more fields are missing or invalid';
                 $notificationType = 'error_message';
-                $firstNameErr = empty($clientFirstname) ? ' input_error' : "";
-                $lastNameErr = empty($clientLastname) ? ' input_error' : "";
-                $emailErr = empty($clientEmail) ? ' input_error' : "";
+                $firstNameErr = empty($checkName) ? ' input_error' : "";
+                $lastNameErr = empty($checkLastName) ? ' input_error' : "";
+                $emailErr = empty($client_email) ? ' input_error' : "";
                 // Get the array of classifications. This is needed for almost every view
                 $classifications = getClassifications();
                 //Render the  update account view 
@@ -214,7 +218,7 @@
                 exit; 
             }
             //Check if the email is used by another account 
-            $otherAccountFound = findOtherAccountUsingThisEmail($clientEmail, $_SESSION['clientData']['clientId']);
+            $otherAccountFound = findOtherAccountUsingThisEmail($client_email, $_SESSION['clientData']['client_id']);
             if(!empty($otherAccountFound)){
                 $message = 'Email already used by another account.';
                 $notificationType = 'error_message';
@@ -226,17 +230,17 @@
                 exit; 
             }
             // Send the data to the model
-            $updateOutcome = updateClient($clientFirstname, $clientLastname, $clientEmail, $_SESSION['clientData']['clientId']);
+            $updateOutcome = updateClient($client_first_name, $client_last_name, $client_email, $_SESSION['clientData']['client_id']);
             // Check and report the result
             if($updateOutcome === 1){
-                $clientData = getClient($clientEmail);
+                $clientData = getClient($client_email);
                 // Remove the password from the array
                 // the array_pop function removes the last
                 // element from an array
                 array_pop($clientData);
                 // Update the client data in the session  
                 $_SESSION['clientData'] = $clientData;
-                $_SESSION['message'] = "$clientFirstname, your account has been successfully updated";
+                $_SESSION['message'] = "$client_first_name, your account has been successfully updated";
                 $_SESSION['notificationType'] = 'success_message';
                 //Redirect to the default case of the accounts controller to render the login view
                 header('Location: ' . ROOT_URI . 'controllers/accounts/');
@@ -264,9 +268,9 @@
                 exit;
             }
             // Filter and store the data
-            $clientPassword = filter_input(INPUT_POST, 'clientPassword', FILTER_SANITIZE_STRING);
+            $client_password = filter_input(INPUT_POST, 'client_password', FILTER_SANITIZE_STRING);
             $oldPassword = filter_input(INPUT_POST, 'oldPassword', FILTER_SANITIZE_STRING);
-            $checkPassword1 = checkPassword($clientPassword);
+            $checkPassword1 = checkPassword($client_password);
             $checkPassword2 = checkPassword($oldPassword);
             //Track input  errors
             $clientPasswordErr = $oldPasswordErr = "";
@@ -284,9 +288,9 @@
             }
             // A valid old and new passwords exists, proceed comparing old password with the one in the database
             //This is an additional step for security
-            $clientData = getClient($_SESSION['clientData']['clientEmail']);
+            $clientData = getClient($_SESSION['clientData']['client_email']);
             //Check that the old password match the current password in the database
-            $matchedPassword = password_verify($oldPassword, $clientData['clientPassword']);
+            $matchedPassword = password_verify($oldPassword, $clientData['client_password']);
             // If the hashes don't match create an error
             // and return to the login view
             if(!$matchedPassword) {
@@ -299,12 +303,12 @@
                 exit;
             }
             // Hash the  new password
-            $hashedPassword = password_hash($clientPassword, PASSWORD_DEFAULT); 
+            $hashedPassword = password_hash($client_password, PASSWORD_DEFAULT); 
             //Update the password in the database 
-            $updateOutcome = updateClientPassword($hashedPassword, $_SESSION['clientData']['clientId']);
+            $updateOutcome = updateClientPassword($hashedPassword, $_SESSION['clientData']['client_id']);
             // Check and report the result
             if($updateOutcome === 1){
-                $_SESSION['message'] = $_SESSION['clientData']['clientFirstname'] . ", your password has been successfully changed";
+                $_SESSION['message'] = $_SESSION['clientData']['client_first_name'] . ", your password has been successfully changed";
                 $_SESSION['notificationType'] = 'success_message';
                 //Redirect to the default case of the accounts controller to render the admin view
                 header('Location: ' . ROOT_URI . 'controllers/accounts/');

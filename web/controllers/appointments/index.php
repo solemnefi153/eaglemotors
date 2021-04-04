@@ -7,6 +7,7 @@ session_start();
     require_once ABS_ROOT_FILE_PATH . '/models/car_classifications_model.php';
     require_once ABS_ROOT_FILE_PATH . '/models/vehicles_model.php';
     require_once ABS_ROOT_FILE_PATH . '/models/appointments_model.php';
+    require_once ABS_ROOT_FILE_PATH . '/models/uploads_model.php';
     //Import some utility functions 
     require_once ABS_ROOT_FILE_PATH . '/library/formValidation.php';
     require_once ABS_ROOT_FILE_PATH . '/library/handleAdminOrClientRequests.php';
@@ -24,7 +25,7 @@ session_start();
         //renders the create appointment view
         case 'create_appointment_view':
             //Filter the values form the query string
-            $invId = filter_input(INPUT_GET, 'invId', FILTER_VALIDATE_INT);
+            $inv_id = filter_input(INPUT_GET, 'inv_id', FILTER_VALIDATE_INT);
             //Check if the user wants to set up an appointment without creating an account or login in 
             $guest = filter_input(INPUT_GET, 'guest', FILTER_SANITIZE_STRING);
             if ($guest == ''){
@@ -41,14 +42,16 @@ session_start();
             if(!isset($_SESSION['clientData'])){
                 //If there is not a current session check if the guest parameter has not been set to true
                 if(!$guest){
-                    $_SESSION['redirectURL'] = "/eaglemotors/controllers/appointments/?action=create_appointment_view&invId=$invId";
+                    $_SESSION['redirectURL'] = ROOT_URI . "controllers/appointments/?action=create_appointment_view&inv_id=$inv_id";
                     //prompt to sign in or to continue as a guest
                     header('Location: ' . ROOT_URI . 'controllers/accounts/?action=view_loginOrGuest');
                     exit;
                 }
             }
-            //Check that a valid  invId was passed to this controller
-            $vehicleInfo = getInvItemInfo($invId);
+            //Check that a valid  inv_id was passed to this controller
+            $vehicleInfo = getInvItemInfo($inv_id);
+            //Get the vehicle thumbnail 
+            $vehicleMainTnImage = getVehiclePrimaryImageTn($inv_id);
             if (empty($vehicleInfo)){
                 $message = 'No inventory infomrmation found';
                 $notificationType = 'error_message';
@@ -64,10 +67,10 @@ session_start();
                     $clientPhoneNumberErr =  $_SESSION['input']['inputErrors']['clientPhoneNumberErr'];
                 }
                 //Set the input values
-                $appointmentInfo['clientFirstname'] = $_SESSION['input']['inputValues']['clientFirstname'];
-                $appointmentInfo['appointmentDate'] = $_SESSION['input']['inputValues']['appointmentDate'];
-                $appointmentInfo['appointmentTime'] = $_SESSION['input']['inputValues']['appointmentTime'];
-                $appointmentInfo['clientPhoneNumber'] = $_SESSION['input']['inputValues']['clientPhoneNumber'];
+                $appointmentInfo['client_first_name'] = $_SESSION['input']['inputValues']['client_first_name'];
+                $appointmentInfo['appointment_date'] = $_SESSION['input']['inputValues']['appointment_date'];
+                $appointmentInfo['appointment_time'] = $_SESSION['input']['inputValues']['appointment_time'];
+                $appointmentInfo['client_phone_number'] = $_SESSION['input']['inputValues']['client_phone_number'];
                 //Unset the input SESSION variables
                 unset($_SESSION['input']);
             }
@@ -79,79 +82,81 @@ session_start();
         //Creates a new appointment in the database
         case 'createAppointment':
             // Store the incoming information
-            $appointmentDate = filter_input(INPUT_POST, 'appointmentDate', FILTER_SANITIZE_STRING);
-            $appointmentTime = filter_input(INPUT_POST, 'appointmentTime', FILTER_SANITIZE_STRING);
-            $clientFirstname = filter_input(INPUT_POST, 'clientFirstname', FILTER_SANITIZE_STRING);
-            $clientPhoneNumber = filter_input(INPUT_POST, 'clientPhoneNumber', FILTER_SANITIZE_STRING);
-            $clientId = filter_input(INPUT_POST, 'clientId', FILTER_VALIDATE_INT);
-            $invId = filter_input(INPUT_POST, 'invId', FILTER_VALIDATE_INT);
+            $appointment_date = filter_input(INPUT_POST, 'appointment_date', FILTER_SANITIZE_STRING);
+            $appointment_time = filter_input(INPUT_POST, 'appointment_time', FILTER_SANITIZE_STRING);
+            $client_first_name = filter_input(INPUT_POST, 'client_first_name', FILTER_SANITIZE_STRING);
+            $client_phone_number = filter_input(INPUT_POST, 'client_phone_number', FILTER_SANITIZE_STRING);
+            $client_id = filter_input(INPUT_POST, 'client_id', FILTER_VALIDATE_INT);
+            $inv_id = filter_input(INPUT_POST, 'inv_id', FILTER_VALIDATE_INT);
             $guest = filter_input(INPUT_POST, 'guest', FILTER_SANITIZE_STRING);
-            //Check that the invId was passed to this controller
-            $vehicleInfo = getInvItemInfo($invId);
+            //Check that the inv_id was passed to this controller
+            $vehicleInfo = getInvItemInfo($inv_id);
             if (empty($vehicleInfo)){
                 // Redirect to the create appointment view to notify the user that a vehicle was not found
                 $_SESSION['guest'] = $guest;
-                header("Location: " . ROOT_URI . "/controllers/appointments/?action=create_appointment_view&invId=$invId");
+                header("Location: " . ROOT_URI . "/controllers/appointments/?action=create_appointment_view&inv_id=$inv_id");
                 exit; 
             }
+            //Check that the name is valid 
+            $vlaidName = validateNameOrLastName($client_first_name);
             //Check phone number format 
-            $validPhoneNumber = validatePhoneNumber($clientPhoneNumber);
+            $validPhoneNumber = validatePhoneNumber($client_phone_number);
             //Validate the date 
-            $validDate = validateTestDriveAppointmentDate($appointmentDate);
+            $validDate = validateTestDriveAppointmentDate($appointment_date);
             //Validate the time
-            $validTime = validateTestDriveAppointmentTime($appointmentTime); 
+            $validTime = validateTestDriveAppointmentTime($appointment_time); 
             //Check that the necesary values where passed 
             //Track input errors 
             $appointmentDateErr = $appointmentTimeErr = $clientNameErr = $clientPhoneNumberErr = "";
-            if (!$validDate || !$validTime || empty($clientFirstname) || !$validPhoneNumber ) {
+            if (!$validDate || !$validTime || empty($vlaidName) || !$validPhoneNumber ) {
                 $_SESSION['message'] = 'One or more fields are missing or invalid';
                 $_SESSION['notificationType'] = 'error_message';
                 //Set the input errors
-                $_SESSION['input']['inputErrors']['clientFirstnameErr'] = empty($clientFirstname) ? ' input_error' : "";
+                $_SESSION['input']['inputErrors']['clientFirstnameErr'] = empty($vlaidName) ? ' input_error' : "";
                 $_SESSION['input']['inputErrors']['appointmentDateErr'] = !$validDate ? ' input_error' : "";
                 $_SESSION['input']['inputErrors']['appointmentTimeErr'] = !$validTime ? ' input_error' : "";
                 $_SESSION['input']['inputErrors']['clientPhoneNumberErr'] = !$validPhoneNumber ? ' input_error' : "";
                 //Set the input values
-                $_SESSION['input']['inputValues']['clientFirstname'] = $clientFirstname;
-                $_SESSION['input']['inputValues']['appointmentDate'] = $appointmentDate;
-                $_SESSION['input']['inputValues']['appointmentTime'] = $appointmentTime;
-                $_SESSION['input']['inputValues']['clientPhoneNumber'] = $clientPhoneNumber;
+                $_SESSION['input']['inputValues']['client_first_name'] = $client_first_name;
+                $_SESSION['input']['inputValues']['appointment_date'] = $appointment_date;
+                $_SESSION['input']['inputValues']['appointment_time'] = $appointment_time;
+                $_SESSION['input']['inputValues']['client_phone_number'] = $client_phone_number;
                 $_SESSION['guest'] = $guest;
                 //Redirect to the case that renders the update appointment view
-                header("Location: " . ROOT_URI . "controllers/appointments/?action=create_appointment_view&invId=$invId");
+                header("Location: " . ROOT_URI . "controllers/appointments/?action=create_appointment_view&inv_id=$inv_id");
                 exit; 
             }
             // Send the data to the appointments model
-            $outcome = createAppointment($appointmentDate, $appointmentTime, $clientFirstname, $clientPhoneNumber, $clientId, $invId);
+            $outcome = createAppointment($appointment_date, $appointment_time, $client_first_name, $client_phone_number, $client_id, $inv_id);
             // Check and report the result
             if($outcome === 1){
-                $_SESSION['message'] = "Your test drive has been sucesfuly scheduled for $appointmentDate at $appointmentTime";
+                $_SESSION['message'] = "Your test drive has been sucesfuly scheduled for $appointment_date at $appointment_time";
                 //If there is an active session prompt the user to go to his/ her account to manage his/her appointments 
                 if(isset($_SESSION['clientData'])){
                     $_SESSION['message'] .= "  Go to your account to view and update the apointment details";
                 }
                 $_SESSION['notificationType']  = 'success_message';
-                header("Location: " . ROOT_URI . "controllers/vehicles/?action=view_vehicle_details&invId=$invId");
+                header("Location: " . ROOT_URI . "controllers/vehicles/?action=view_vehicle_details&inv_id=$inv_id");
                 exit;
             } else {
                 $_SESSION['message'] = "Something went wrong. Try again or use different values.";
                 $_SESSION['notificationType'] = 'error_message';
                 //Set the input values
-                $_SESSION['input']['inputValues']['clientFirstname'] = $clientFirstname;
-                $_SESSION['input']['inputValues']['appointmentDate'] = $appointmentDate;
-                $_SESSION['input']['inputValues']['appointmentTime'] = $appointmentTime;
-                $_SESSION['input']['inputValues']['clientPhoneNumber'] = $clientPhoneNumber;
+                $_SESSION['input']['inputValues']['client_first_name'] = $client_first_name;
+                $_SESSION['input']['inputValues']['appointment_date'] = $appointment_date;
+                $_SESSION['input']['inputValues']['appointment_time'] = $appointment_time;
+                $_SESSION['input']['inputValues']['client_phone_number'] = $client_phone_number;
                 $_SESSION['guest'] = $guest;
-                header("Location: " . ROOT_URI . "controllers/appointments/?action=create_appointment_view&invId=$invId");
+                header("Location: " . ROOT_URI . "controllers/appointments/?action=create_appointment_view&inv_id=$inv_id");
                 exit;
             }
             break;
         //Renders the appointment details view if the user has proper rights
         case 'view_update_appointment':
             //Get and filter the input values form the query string 
-            $appointmentId = filter_input(INPUT_GET, 'appointmentId', FILTER_VALIDATE_INT);
+            $appointment_id = filter_input(INPUT_GET, 'appointment_id', FILTER_VALIDATE_INT);
             //Check if  the appointment does not exist 
-            $appointmentInfo = getAppointmentInfo($appointmentId);
+            $appointmentInfo = getAppointmentInfo($appointment_id);
             if(empty($appointmentInfo)){
                 if(isset($_SESSION['input'])){
                     unset($_SESSION['input']);
@@ -173,14 +178,16 @@ session_start();
                         $clientPhoneNumberErr =  $_SESSION['input']['inputErrors']['clientPhoneNumberErr'];
                     }
                     //Set the input values
-                    $appointmentInfo['appointmentDate'] = $_SESSION['input']['inputValues']['appointmentDate'];
-                    $appointmentInfo['appointmentTime'] = $_SESSION['input']['inputValues']['appointmentTime'];
-                    $appointmentInfo['clientPhoneNumber'] = $_SESSION['input']['inputValues']['clientPhoneNumber'];
+                    $appointmentInfo['appointment_date'] = $_SESSION['input']['inputValues']['appointment_date'];
+                    $appointmentInfo['appointment_time'] = $_SESSION['input']['inputValues']['appointment_time'];
+                    $appointmentInfo['client_phone_number'] = $_SESSION['input']['inputValues']['client_phone_number'];
                     //Unset the input SESSION variable
                     unset($_SESSION['input']);
                 }
                 //Get the vehicle information 
-                $vehicleInfo = getInvItemInfo($appointmentInfo['invId']);
+                $vehicleInfo = getInvItemInfo($appointmentInfo['inv_id']);
+                //Get the vehicle thumbnail 
+                 $vehicleMainTnImage = getVehiclePrimaryImageTn($appointmentInfo['inv_id']);
                 // Get the array of classifications. This is needed for almost every view
                 $classifications = getClassifications();
                 //Render the update appointment view
@@ -196,12 +203,12 @@ session_start();
         //Updates the appointment information in the database if the user has proper rights
         case 'updateAppointment':
             // Store the incoming information
-            $appointmentDate = filter_input(INPUT_POST, 'appointmentDate', FILTER_SANITIZE_STRING);
-            $appointmentTime = filter_input(INPUT_POST, 'appointmentTime', FILTER_SANITIZE_STRING);
-            $clientPhoneNumber = filter_input(INPUT_POST, 'clientPhoneNumber', FILTER_SANITIZE_STRING);
-            $appointmentId = filter_input(INPUT_POST, 'appointmentId', FILTER_SANITIZE_NUMBER_INT);
+            $appointment_date = filter_input(INPUT_POST, 'appointment_date', FILTER_SANITIZE_STRING);
+            $appointment_time = filter_input(INPUT_POST, 'appointment_time', FILTER_SANITIZE_STRING);
+            $client_phone_number = filter_input(INPUT_POST, 'client_phone_number', FILTER_SANITIZE_STRING);
+            $appointment_id = filter_input(INPUT_POST, 'appointment_id', FILTER_SANITIZE_NUMBER_INT);
             //Check if  the appointment does not exist 
-            $appointmentInfo = getAppointmentInfo($appointmentId);
+            $appointmentInfo = getAppointmentInfo($appointment_id);
             if(empty($appointmentInfo)){
                 $_SESSION['message'] = 'No information found for the requested appointment';
                 $_SESSION['notificationType'] = 'error_message';
@@ -210,13 +217,13 @@ session_start();
                 exit;
             }
             handleAdminOrClientRequest($appointmentInfo, function(){
-                global $clientPhoneNumber, $appointmentDate, $appointmentTime, $appointmentId;
+                global $client_phone_number, $appointment_date, $appointment_time, $appointment_id;
                 //Check phone number format 
-                $validPhoneNumber = validatePhoneNumber($clientPhoneNumber);
+                $validPhoneNumber = validatePhoneNumber($client_phone_number);
                 //Validate the date 
-                $validDate = validateTestDriveAppointmentDate($appointmentDate);
+                $validDate = validateTestDriveAppointmentDate($appointment_date);
                 //Validate the time
-                $validTime = validateTestDriveAppointmentTime($appointmentTime); 
+                $validTime = validateTestDriveAppointmentTime($appointment_time); 
                 //Validate the data
                 if (!$validDate || !$validTime || !$validPhoneNumber ) {
                     $_SESSION['message'] = 'One or more fields are missing or invalid';
@@ -226,15 +233,15 @@ session_start();
                     $_SESSION['input']['inputErrors']['appointmentTimeErr'] = !$validTime ? ' input_error' : "";
                     $_SESSION['input']['inputErrors']['clientPhoneNumberErr'] = !$validPhoneNumber ? ' input_error' : "";
                     //Set the input values
-                    $_SESSION['input']['inputValues']['appointmentDate'] = $appointmentDate;
-                    $_SESSION['input']['inputValues']['appointmentTime'] = $appointmentTime;
-                    $_SESSION['input']['inputValues']['clientPhoneNumber'] = $clientPhoneNumber;
+                    $_SESSION['input']['inputValues']['appointment_date'] = $appointment_date;
+                    $_SESSION['input']['inputValues']['appointment_time'] = $appointment_time;
+                    $_SESSION['input']['inputValues']['client_phone_number'] = $client_phone_number;
                     //Redirect to the case that renders the update appointment view
-                    header("Location: " . ROOT_URI . "controllers/appointments/?action=view_update_appointment&appointmentId=$appointmentId");
+                    header("Location: " . ROOT_URI . "controllers/appointments/?action=view_update_appointment&appointment_id=$appointment_id");
                     exit; 
                 }
                 // Send the data to the appointments model
-                $outcome = editAppointment($appointmentId, $appointmentDate, $appointmentTime, $clientPhoneNumber);
+                $outcome = editAppointment($appointment_id, $appointment_date, $appointment_time, $client_phone_number);
                 //Check and report the result
                 if($outcome === 1){
                     $_SESSION['message'] = "Your appointment has been sucesfuly updated";
@@ -245,20 +252,20 @@ session_start();
                 $_SESSION['message'] = "Something went wrong. Try again or use different values.";
                 $_SESSION['notificationType'] = 'error_message';
                 //Set the input values
-                $_SESSION['input']['inputValues']['appointmentDate'] = $appointmentDate;
-                $_SESSION['input']['inputValues']['appointmentTime'] = $appointmentTime;
-                $_SESSION['input']['inputValues']['clientPhoneNumber'] = $clientPhoneNumber;
+                $_SESSION['input']['inputValues']['appointment_date'] = $appointment_date;
+                $_SESSION['input']['inputValues']['appointment_time'] = $appointment_time;
+                $_SESSION['input']['inputValues']['client_phone_number'] = $client_phone_number;
                 //Redirect to the case that renders the update appointment view
-                header("Location: " . ROOT_URI . "controllers/appointments/?action=view_update_appointment&appointmentId=$appointmentId");
+                header("Location: " . ROOT_URI . "controllers/appointments/?action=view_update_appointment&appointment_id=$appointment_id");
                 exit;
             });
             break;
         //Updates the appointment information in the database if the user has proper rights
         case 'cancelAppointment':
             // Store the incoming information
-            $appointmentId = filter_input(INPUT_GET, 'appointmentId', FILTER_SANITIZE_NUMBER_INT);
+            $appointment_id = filter_input(INPUT_GET, 'appointment_id', FILTER_SANITIZE_NUMBER_INT);
             //Check if  the appointment does not exist 
-            $appointmentInfo = getAppointmentInfo($appointmentId);
+            $appointmentInfo = getAppointmentInfo($appointment_id);
             if(empty($appointmentInfo)){
                 $_SESSION['message'] = 'No information found for the requested appointment';
                 $_SESSION['notificationType'] = 'error_message';
@@ -267,13 +274,13 @@ session_start();
                 exit;
             }
             handleAdminOrClientRequest($appointmentInfo, function(){
-                global $appointmentId;
+                global $appointment_id;
                 // Send the data to the appointments model
-                $outcome = deleteAppointment($appointmentId);
+                $outcome = deleteAppointment($appointment_id);
                 //Check and report the result
                 if($outcome === 1){
                     //The message will be different depending on the client Level 
-                    if($_SESSION['clientData']['clientLevel'] > 1){
+                    if($_SESSION['clientData']['client_level'] > 1){
                         $_SESSION['message'] = "Your appointment has been sucesfuly cancelled. Please, make sure that the  customer has been notified";
                     }
                     else{
@@ -286,10 +293,11 @@ session_start();
                 $_SESSION['message'] = "Something went wrong. Unable to delete appointment";
                 $_SESSION['notificationType'] = 'error_message';
                 //Redirect to the case that renders the update appointment view
-                header("Location:" . ROOT_URI . "controllers/appointments/?action=view_update_appointment&appointmentId=$appointmentId");
+                header("Location:" . ROOT_URI . "controllers/appointments/?action=view_update_appointment&appointment_id=$appointment_id");
                 exit;
             });
             break;
+        //Renders all the upcomming appoitments for the client and all the appointments for the admin user
         default:
             //Check that there is not a current session
             if(!isset($_SESSION['clientData'])){
@@ -299,10 +307,10 @@ session_start();
                 header("Location: " . ROOT_URI . "controllers/accounts/");
                 exit;
             }
-            $clientLevel = $_SESSION['clientData']['clientLevel'];
-            if( $clientLevel == 1){
+            $client_level = $_SESSION['clientData']['client_level'];
+            if( $client_level == 1){
                 //Get upcomming appointments for only the customer
-                $upcomingAppointments = getClientUpcomingAppointments($_SESSION['clientData']['clientId']);
+                $upcomingAppointments = getClientUpcomingAppointments($_SESSION['clientData']['client_id']);
             }
             else{
                 //Get all the appointments in the DB

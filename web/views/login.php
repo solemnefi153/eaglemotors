@@ -16,10 +16,10 @@
                 <div class='form_container'>
                     <form class='custom_form' method='POST' action='<?php echo ROOT_URI; ?>controllers/accounts/'>
                         <h1 class='form_title'>Sign In</h1>
-                        <label for='clientEmail'>Email Address:</label>
-                        <input type="email" class="form_input <?php if(isset($emailErr)) echo $emailErr; ?>" id="clientEmail"  name="clientEmail"  value='<?php if(isset($clientEmail)) echo $clientEmail;?>' required>
-                        <label for='clientPassword'>Password:</label>
-                        <input type="password" class="form_input <?php if(isset($passwordErr)) echo $passwordErr; ?>" id="clientPassword"  name="clientPassword"   value='<?php if(isset($clientPassword)) echo $clientPassword;?>' required
+                        <label for='client_email'>Email Address:</label>
+                        <input type="email" class="form_input <?php if(isset($emailErr)) echo $emailErr; ?>" id="client_email"  name="client_email"  value='<?php if(isset($client_email)) echo $client_email;?>' required>
+                        <label for='client_password'>Password:</label>
+                        <input type="password" class="form_input <?php if(isset($passwordErr)) echo $passwordErr; ?>" id="client_password"  name="client_password"   value='<?php if(isset($client_password)) echo $client_password;?>' required
                         pattern="(?=^.{8,}$)(?=.*\d)(?=.*\W+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
                         <div class='inputRequirements'>
                             <span>Passwords should have:</span>
@@ -44,5 +44,3 @@
         </div>
     </body>
 </html>
-
-

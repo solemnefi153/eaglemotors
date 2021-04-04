@@ -21,19 +21,29 @@ START TRANSACTION;
 --
 
 -- --------------------------------------------------------
+--
+-- Delete tables if they exist
+--
+DROP TABLE IF EXISTS appointments;
+DROP TABLE IF EXISTS clients;
+DROP TABLE IF EXISTS images;
+DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS carclassification;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table appointments
 --
 
 CREATE TABLE appointments (
-  appointmentId SERIAL NOT NULL PRIMARY KEY,
-  appointmentDate DATE NOT NULL,
-  appointmentTime TIME NOT NULL,
-  clientFirstname VARCHAR(50) NOT NULL,
-  clientPhoneNumber VARCHAR(20) DEFAULT NULL,
-  clientId INTEGER  DEFAULT NULL,
-  invId INTEGER  NOT NULL
+  appointment_id SERIAL NOT NULL PRIMARY KEY,
+  appointment_date DATE NOT NULL,
+  appointment_time TIME NOT NULL,
+  client_firstname VARCHAR(50) NOT NULL,
+  client_phone_number VARCHAR(20) DEFAULT NULL,
+  client_id INTEGER  DEFAULT NULL,
+  inv_id INTEGER  NOT NULL
 ); 
 
 -- --------------------------------------------------------
@@ -43,8 +53,8 @@ CREATE TABLE appointments (
 --
 
 CREATE TABLE carclassification (
-  classificationId SERIAL NOT NULL PRIMARY KEY,
-  classificationName VARCHAR(30) NOT NULL
+  classification_id SERIAL NOT NULL PRIMARY KEY,
+  classification_name VARCHAR(30) NOT NULL
 );
 
 -- --------------------------------------------------------
@@ -54,14 +64,14 @@ CREATE TABLE carclassification (
 --
 
 CREATE TABLE clients (
-  clientId SERIAL  NOT NULL PRIMARY KEY,
-  clientFirstname VARCHAR(15) NOT NULL,
-  clientLastname VARCHAR(25) NOT NULL,
-  clientEmail VARCHAR(40) NOT NULL,
-  clientPassword VARCHAR(255) NOT NULL,
-  clientLevel  INTEGER NOT NULL DEFAULT 1,
+  client_id SERIAL  NOT NULL PRIMARY KEY,
+  client_first_name VARCHAR(15) NOT NULL,
+  client_last_name VARCHAR(25) NOT NULL,
+  client_email VARCHAR(40) NOT NULL,
+  client_password VARCHAR(255) NOT NULL,
+  client_level  INTEGER NOT NULL DEFAULT 1,
   comment TEXT DEFAULT NULL, 
-  UNIQUE(clientEmail)
+  UNIQUE(client_email)
 );
 
 -- --------------------------------------------------------
@@ -71,13 +81,13 @@ CREATE TABLE clients (
 --
 
 CREATE TABLE images (
-  imgId SERIAL NOT NULL PRIMARY KEY,
-  invId INTEGER NOT NULL,
-  imgName VARCHAR(100)  NOT NULL,
-  imgPath VARCHAR(150)  NOT NULL,
-  imgDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  imgPrimary INTEGER NOT NULL DEFAULT 0, 
-  UNIQUE(imgPath)
+  img_id SERIAL NOT NULL PRIMARY KEY,
+  inv_id INTEGER NOT NULL,
+  img_name VARCHAR(100)  NOT NULL,
+  img_path VARCHAR(150)  NOT NULL,
+  img_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  img_primary INTEGER NOT NULL DEFAULT 0, 
+  UNIQUE(img_path)
 );
 
 -- --------------------------------------------------------
@@ -87,14 +97,14 @@ CREATE TABLE images (
 --
 
 CREATE TABLE inventory (
-  invId SERIAL  NOT NULL PRIMARY KEY,
-  invMake VARCHAR(30) NOT NULL,
-  invModel VARCHAR(30) NOT NULL,
-  invDescription TEXT DEFAULT NULL,
-  invPrice DECIMAL(10,2) NOT NULL,
-  invStock INTEGER NOT NULL,
-  invColor VARCHAR(20) NOT NULL,
-  classificationId INTEGER NOT NULL
+  inv_id SERIAL  NOT NULL PRIMARY KEY,
+  inv_make VARCHAR(30) NOT NULL,
+  inv_model VARCHAR(30) NOT NULL,
+  inv_description TEXT DEFAULT NULL,
+  inv_price DECIMAL(10,2) NOT NULL,
+  inv_stock INTEGER NOT NULL,
+  inv_color VARCHAR(20) NOT NULL,
+  classification_id INTEGER NOT NULL
 );
 
 
@@ -103,26 +113,26 @@ CREATE TABLE inventory (
 -- Constraints for table appointments
 --
 ALTER TABLE appointments
-  ADD CONSTRAINT appointments_ibfk_1 FOREIGN KEY (invId) REFERENCES inventory (invId) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT appointments_fk_1 FOREIGN KEY (inv_id) REFERENCES inventory (inv_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table images
 --
 ALTER TABLE images
-  ADD CONSTRAINT images_ibfk_1 FOREIGN KEY (invId) REFERENCES inventory (invId) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT images_fk_1 FOREIGN KEY (inv_id) REFERENCES inventory (inv_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table inventory
 --
 ALTER TABLE inventory
-  ADD CONSTRAINT inventory_ibfk_1 FOREIGN KEY (classificationId) REFERENCES carclassification (classificationId);
+  ADD CONSTRAINT inventory_fk_1 FOREIGN KEY (classification_id) REFERENCES carclassification (classification_id);
 
 
 --
 -- Dumping data for table carclassification
 --
 
-INSERT INTO carclassification (classificationId, classificationName) VALUES
+INSERT INTO carclassification (classification_id, classification_name) VALUES
 (1, 'SUV'),
 (2, 'Classic'),
 (3, 'Sports'),
@@ -133,7 +143,7 @@ INSERT INTO carclassification (classificationId, classificationName) VALUES
 -- Dumping data for table inventory
 --
 
-INSERT INTO inventory (invId, invMake, invModel, invDescription, invPrice, invStock, invColor, classificationId) VALUES
+INSERT INTO inventory (inv_id, inv_make, inv_model, inv_description, inv_price, inv_stock, inv_color, classification_id) VALUES
 (1, 'Jeep ', 'Wrangler', 'The Jeep Wrangler is small and compact with enough power to get you where you want to go. Its great for everyday driving as well as offroading weather that be on the the rocks or in the mud!', '28045.00', 4, 'Orange', 1),
 (2, 'Ford', 'Model T', 'The Ford Model T can be a bit tricky to drive. It was the first car to be put into production. You can get it in any color you want as long as it s black.', '30000.00', 2, 'Black', 2),
 (3, 'Lamborghini', 'Adventador', 'This V-12 engine packs a punch in this sporty car. Make sure you wear your seatbelt and obey all traffic laws. ', '417650.00', 5, 'White', 3),
@@ -154,7 +164,7 @@ INSERT INTO inventory (invId, invMake, invModel, invDescription, invPrice, invSt
 -- Dumping data for table images
 --
 
-INSERT INTO images (imgId, invId, imgName, imgPath, imgDate, imgPrimary) VALUES
+INSERT INTO images (img_id, inv_id, img_name, img_path, img_date, img_primary) VALUES
 (95, 1, 'jeep-wrangler.jpg', 'images/vehicles/jeep-wrangler.jpg', '2021-03-22 19:39:41', 1),
 (96, 1, 'jeep-wrangler-tn.jpg', 'images/vehicles/jeep-wrangler-tn.jpg', '2021-03-22 19:39:41', 1),
 (97, 1, 'jeep-wrangler-2.jpeg', 'images/vehicles/jeep-wrangler-2.jpeg', '2021-03-22 19:40:13', 0),

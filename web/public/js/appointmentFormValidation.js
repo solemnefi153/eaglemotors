@@ -1,4 +1,4 @@
-var nameInput = document.getElementById('clientFirstname')
+var nameInput = document.getElementById('client_first_name')
 //Add event listener to the date input field
 nameInput.addEventListener('input' , (function(e) {
     if(nameInput.value == '') {
@@ -8,7 +8,7 @@ nameInput.addEventListener('input' , (function(e) {
     }
 }))
 
-var dateInput = document.getElementById('appointmentDate')
+var dateInput = document.getElementById('appointment_date')
 //Add event listener to the date input field
 dateInput.addEventListener('change' , (function(e) {
     var d = new Date(e.target.value)
@@ -19,7 +19,7 @@ dateInput.addEventListener('change' , (function(e) {
     }
 }))
 
-var timeInput = document.getElementById('appointmentTime')
+var timeInput = document.getElementById('appointment_time')
 //Add event listener to the date input field
 timeInput.addEventListener('change' , (function(e) {
     const selectedTime = new Date("01/01/2000 "+ timeInput.value);
@@ -33,7 +33,7 @@ timeInput.addEventListener('change' , (function(e) {
     }
 }))
 
-var phoneInput = document.getElementById('clientPhoneNumber')
+var phoneInput = document.getElementById('client_phone_number')
 //Add event listener to the date input field
 phoneInput.addEventListener('input' , (function(e) {
     const selectedTime = phoneInput.value;

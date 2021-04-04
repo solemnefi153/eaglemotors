@@ -25,14 +25,14 @@ session_start();
         case 'upload':
             processAdminRequests( function () {
                 // Store the incoming vehicle id and primary picture indicator
-                $invId = filter_input(INPUT_POST, 'invId', FILTER_VALIDATE_INT);
-                $imgPrimary = filter_input(INPUT_POST, 'imgPrimary', FILTER_VALIDATE_INT);
+                $inv_id = filter_input(INPUT_POST, 'inv_id', FILTER_VALIDATE_INT);
+                $img_primary = filter_input(INPUT_POST, 'img_primary', FILTER_VALIDATE_INT);
                 // Store the name of the uploaded image
-                $imgName = $_FILES['file1']['name'];
+                $img_name = $_FILES['file1']['name'];
                 //Check that the necesary values where passed 
-                if (!empty($invId) && !empty($imgName)) {
+                if (!empty($inv_id) && !empty($img_name)) {
                     //Check if the image already exist on the server
-                    $imageCheck = checkExistingImage($imgName);
+                    $imageCheck = checkExistingImage($img_name);
                     if(!$imageCheck){
                         // Upload the image
                         //Store the returned path to the file
@@ -40,7 +40,7 @@ session_start();
                         // Change name in path to get the Thumbnail path
                         $imgPathTh = makeThumbnailName($imgPath);
                         // Insert the images information to the database, get the result
-                        $result = storeImages($imgPath, $invId, $imgName, $imgPrimary);
+                        $result = storeImages($imgPath, $inv_id, $img_name, $img_primary);
                         // Set a message based on the insert result
                         if ($result) {
                             // Store message to session
@@ -78,33 +78,27 @@ session_start();
                 global $image_dir_path;
                 // Get the image name and id
                 $filename = filter_input(INPUT_GET, 'filename', FILTER_SANITIZE_STRING);
-                $imgId = filter_input(INPUT_GET, 'imgId', FILTER_VALIDATE_INT);
+                $img_id = filter_input(INPUT_GET, 'img_id', FILTER_VALIDATE_INT);
                 // Build the full path to the image to be deleted
                 $target = $image_dir_path . '/' . $filename;
                 // Check that the file exists in that location
+                $unlinkResult = true;
                 if (file_exists($target)) {
                     // Deletes the file in the folder
-                    $result = unlink($target); 
-                    
-                    // Remove from database only if physical file deleted
-                    if ($result) {
-                        $remove = deleteImage($imgId);
-                        // Set a message based on the delete result
-                        if ($remove) {
-                            $message = "$filename was successfully deleted";
-                            $notificationType = 'success_message';
-                        } else {
-                            $message = "$filename was NOT deleted from the databse";
-                            $notificationType = 'error_message';
-                        }  
-                    }
-                    else{
-                        $message = "An error occured while deleting the image from the server";
-                        $notificationType = 'error_message';
-                    }
+                    $unlinkResult = unlink($target); 
+                }   
+                $removeFromBDResult = deleteImage($img_id);
+                // Set a message based on the delete result
+                if ($removeFromBDResult && $unlinkResult) {
+                    $message = "$filename image was successfully deleted from the server and the database";
+                    $notificationType = 'success_message';
                 } 
-                else{
-                    $message = "Unable to delete Image: Image does not exist in the server";
+                else if(!$unlinkResult){
+                    $message = "$filename imagewas deleted from the database but NOT deleted from the server. Contact the administrator if this is an error.";
+                    $notificationType = 'error_message';
+                }  
+                else if(!$removeFromBDResult){
+                    $message = "$filename image was deleted from the server but NOT deleted from the database. Contact the administrator if this is an error.";
                     $notificationType = 'error_message';
                 }
                 // Store message to session

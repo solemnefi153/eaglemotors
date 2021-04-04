@@ -40,33 +40,33 @@ session_start();
             processAdminRequests(function (){
                 // Sanitize and store the data
                 $newVehicle =  array(
-                    'invMake' => filter_input(INPUT_POST, 'invMake', FILTER_SANITIZE_STRING),
-                    'invModel' => filter_input(INPUT_POST, 'invModel', FILTER_SANITIZE_STRING),
-                    'invDescription' => filter_input(INPUT_POST, 'invDescription', FILTER_SANITIZE_STRING),
-                    'invPrice' => filter_input(INPUT_POST, 'invPrice', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
-                    'invStock' => filter_input(INPUT_POST, 'invStock', FILTER_SANITIZE_NUMBER_INT),
-                    'invColor' => filter_input(INPUT_POST, 'invColor', FILTER_SANITIZE_STRING),
-                    'classificationId' => filter_input(INPUT_POST, 'classificationId', FILTER_SANITIZE_NUMBER_INT)
+                    'inv_make' => filter_input(INPUT_POST, 'inv_make', FILTER_SANITIZE_STRING),
+                    'inv_model' => filter_input(INPUT_POST, 'inv_model', FILTER_SANITIZE_STRING),
+                    'inv_description' => filter_input(INPUT_POST, 'inv_description', FILTER_SANITIZE_STRING),
+                    'inv_price' => filter_input(INPUT_POST, 'inv_price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
+                    'inv_stock' => filter_input(INPUT_POST, 'inv_stock', FILTER_SANITIZE_NUMBER_INT),
+                    'inv_color' => filter_input(INPUT_POST, 'inv_color', FILTER_SANITIZE_STRING),
+                    'classification_id' => filter_input(INPUT_POST, 'classification_id', FILTER_SANITIZE_NUMBER_INT)
                 );
                 //Validate input 
-                $validPrice = checkPrice($newVehicle['invPrice']);
-                $newVehicle['invStock'] = checkPositiveNumber($newVehicle['invStock']);
+                $validPrice = checkPrice($newVehicle['inv_price']);
+                $newVehicle['inv_stock'] = checkPositiveNumber($newVehicle['inv_stock']);
                 //Track input errors 
                 $invMakeErr = $invModelErr = $invDescriptionErr = $invPriceErr = $invStockErr = $invColorErr = $classificationIdErr = "";
                 // Check for missing data
-                if(empty($newVehicle['invMake']) || empty($newVehicle['invModel']) || empty($newVehicle['invDescription']) || empty($validPrice) || 
-                   empty($newVehicle['invStock']) || empty($newVehicle['invColor']) || empty($newVehicle['classificationId'])){
+                if(empty($newVehicle['inv_make']) || empty($newVehicle['inv_model']) || empty($newVehicle['inv_description']) || empty($validPrice) || 
+                   empty($newVehicle['inv_stock']) || empty($newVehicle['inv_color']) || empty($newVehicle['classification_id'])){
                     $message = 'One or more fields are missing or invalid';
                     $notificationType = 'error_message';
-                    $invMakeErr = empty($newVehicle['invMake']) ? ' input_error' : "";
-                    $invModelErr = empty($newVehicle['invModel']) ? ' input_error' : "";
-                    $invDescriptionErr = empty($newVehicle['invDescription']) ? ' input_error' : "";
-                    $invStockErr = empty($newVehicle['invStock']) ? ' input_error' : "";
-                    $invColorErr = empty($newVehicle['invColor']) ? ' input_error' : "";
-                    $classificationIdErr = empty($newVehicle['classificationId']) ? ' input_error' : "";
+                    $invMakeErr = empty($newVehicle['inv_make']) ? ' input_error' : "";
+                    $invModelErr = empty($newVehicle['inv_model']) ? ' input_error' : "";
+                    $invDescriptionErr = empty($newVehicle['inv_description']) ? ' input_error' : "";
+                    $invStockErr = empty($newVehicle['inv_stock']) ? ' input_error' : "";
+                    $invColorErr = empty($newVehicle['inv_color']) ? ' input_error' : "";
+                    $classificationIdErr = empty($newVehicle['classification_id']) ? ' input_error' : "";
                     if(empty($validPrice)){
                         $invPriceErr = ' input_error';
-                        $newVehicle['invPrice'] = '';
+                        $newVehicle['inv_price'] = '';
                     } 
                     else{
                         $invPriceErr = "";
@@ -80,7 +80,7 @@ session_start();
                 $outcome = addCarToInvelntory($newVehicle);
                 // Check and report the result
                 if($outcome === 1){
-                    $_SESSION['message'] = "The $newVehicle[invMake] $newVehicle[invModel] was successfully added to the inventory";
+                    $_SESSION['message'] = "The $newVehicle[inv_make] $newVehicle[inv_model] was successfully added to the inventory";
                     $_SESSION['notificationType']  = 'success_message';
                     header("Location: " . ROOT_URI . "controllers/vehicles/");
                     exit;
@@ -115,11 +115,11 @@ session_start();
             //Verify credentials 
             processAdminRequests(function (){
                 // Filter and store the data
-                $classificationName =  filter_input(INPUT_POST, 'classificationName', FILTER_SANITIZE_STRING);
+                $classification_name =  filter_input(INPUT_POST, 'classification_name', FILTER_SANITIZE_STRING);
                 //Track missing data 
                 $classificationNameErr = "";
                 // Check for missing data
-                if(empty($classificationName)){
+                if(empty($classification_name)){
                     $message = 'Missing car classification name';
                     $classificationNameErr =  ' input_error';
                     $notificationType = 'error_message';
@@ -129,10 +129,10 @@ session_start();
                     exit; 
                 }
                 // Send the data to the car classifications model
-                $outcome = addCarClassification($classificationName);
+                $outcome = addCarClassification($classification_name);
                 // Check and report the result
                 if($outcome === 1){
-                    $_SESSION['message'] = "The $classificationName classification was succesfuly created";
+                    $_SESSION['message'] = "The $classification_name classification was succesfuly created";
                     $_SESSION['notificationType'] = 'success_message';
                     header("Location: " . ROOT_URI . "controllers/vehicles/");
                     exit;
@@ -146,14 +146,14 @@ session_start();
                 }
             });
             break;
-        //Get vehicles by classificationId if the user had proper credentials 
+        //Get vehicles by classification_id if the user had proper credentials 
         case 'getInventoryItems': 
             //Verify credentials
             processAdminRequests(function (){
-                // Get the classificationId 
-                $classificationId = filter_input(INPUT_GET, 'classificationId', FILTER_SANITIZE_NUMBER_INT); 
-                // Fetch the vehicles by classificationId from the DB 
-                $inventoryArray = getInventoryByClassification($classificationId); 
+                // Get the classification_id 
+                $classification_id = filter_input(INPUT_GET, 'classification_id', FILTER_SANITIZE_NUMBER_INT); 
+                // Fetch the vehicles by classification_id from the DB 
+                $inventoryArray = getInventoryByClassification($classification_id); 
                 // Convert the array to a JSON object and send it back 
                 echo json_encode($inventoryArray); 
             });
@@ -162,9 +162,9 @@ session_start();
         case 'view_modify_vehicle':
             processAdminRequests(function (){
                 // Filter and store the data
-                $invId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-                $vehicleInfo = getInvItemInfo($invId);
-                $vehicleMainTnImage = getVehiclePrimaryImageTn($invId);
+                $inv_id = filter_input(INPUT_GET, 'inv_id', FILTER_VALIDATE_INT);
+                $vehicleInfo = getInvItemInfo($inv_id);
+                $vehicleMainTnImage = getVehiclePrimaryImageTn($inv_id);
                 //Variables for Vehicle information 
                 if(empty($vehicleInfo)){
                     $message = 'Sorry, no vehicle information could be found.';
@@ -187,35 +187,35 @@ session_start();
             processAdminRequests(function (){
                 // Sanitize and store the data
                 $vehicleInfo =  array(
-                    'invMake' => filter_input(INPUT_POST, 'invMake', FILTER_SANITIZE_STRING),
-                    'invModel' => filter_input(INPUT_POST, 'invModel', FILTER_SANITIZE_STRING),
-                    'invDescription' => filter_input(INPUT_POST, 'invDescription', FILTER_SANITIZE_STRING),
-                    'invPrice' => filter_input(INPUT_POST, 'invPrice', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
-                    'invStock' => filter_input(INPUT_POST, 'invStock', FILTER_SANITIZE_NUMBER_INT),
-                    'invColor' => filter_input(INPUT_POST, 'invColor', FILTER_SANITIZE_STRING),
-                    'classificationId' => filter_input(INPUT_POST, 'classificationId', FILTER_SANITIZE_NUMBER_INT), 
-                    'invId' => filter_input(INPUT_POST, 'invId', FILTER_SANITIZE_NUMBER_INT)
+                    'inv_make' => filter_input(INPUT_POST, 'inv_make', FILTER_SANITIZE_STRING),
+                    'inv_model' => filter_input(INPUT_POST, 'inv_model', FILTER_SANITIZE_STRING),
+                    'inv_description' => filter_input(INPUT_POST, 'inv_description', FILTER_SANITIZE_STRING),
+                    'inv_price' => filter_input(INPUT_POST, 'inv_price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
+                    'inv_stock' => filter_input(INPUT_POST, 'inv_stock', FILTER_SANITIZE_NUMBER_INT),
+                    'inv_color' => filter_input(INPUT_POST, 'inv_color', FILTER_SANITIZE_STRING),
+                    'classification_id' => filter_input(INPUT_POST, 'classification_id', FILTER_SANITIZE_NUMBER_INT), 
+                    'inv_id' => filter_input(INPUT_POST, 'inv_id', FILTER_SANITIZE_NUMBER_INT)
                 );
-                $vehicleMainTnImage = getVehiclePrimaryImageTn($vehicleInfo['invId']);
+                $vehicleMainTnImage = getVehiclePrimaryImageTn($vehicleInfo['inv_id']);
                 //Validate input 
-                $validPrice = checkPrice($vehicleInfo['invPrice']);
-                $vehicleInfo['invStock'] = checkPositiveNumber($vehicleInfo['invStock']);
+                $validPrice = checkPrice($vehicleInfo['inv_price']);
+                $vehicleInfo['inv_stock'] = checkPositiveNumber($vehicleInfo['inv_stock']);
                 //Track input errors 
                 $invMakeErr = $invModelErr = $invDescriptionErr = $invPriceErr = $invStockErr = $invColorErr = $classificationIdErr = "";
                 // Check for missing data
-                if(empty($vehicleInfo['invMake']) || empty($vehicleInfo['invModel']) || empty($vehicleInfo['invDescription']) ||  empty($vehicleInfo) || 
-                   empty($vehicleInfo['invStock']) || empty($vehicleInfo['invColor']) || empty($vehicleInfo['classificationId'])){
+                if(empty($vehicleInfo['inv_make']) || empty($vehicleInfo['inv_model']) || empty($vehicleInfo['inv_description']) ||  empty($vehicleInfo) || 
+                   empty($vehicleInfo['inv_stock']) || empty($vehicleInfo['inv_color']) || empty($vehicleInfo['classification_id'])){
                     $message = 'One or more fields are missing or invalid';
                     $notificationType = 'error_message';
-                    $invMakeErr = empty($vehicleInfo['invMake']) ? ' input_error' : "";
-                    $invModelErr = empty($vehicleInfo['invModel']) ? ' input_error' : "";
-                    $invDescriptionErr = empty($vehicleInfo['invDescription']) ? ' input_error' : "";
-                    $invStockErr = empty($vehicleInfo['invStock']) ? ' input_error' : "";
-                    $invColorErr = empty($vehicleInfo['invColor']) ? ' input_error' : "";
-                    $classificationIdErr = empty($vehicleInfo['classificationId']) ? ' input_error' : "";
+                    $invMakeErr = empty($vehicleInfo['inv_make']) ? ' input_error' : "";
+                    $invModelErr = empty($vehicleInfo['inv_model']) ? ' input_error' : "";
+                    $invDescriptionErr = empty($vehicleInfo['inv_description']) ? ' input_error' : "";
+                    $invStockErr = empty($vehicleInfo['inv_stock']) ? ' input_error' : "";
+                    $invColorErr = empty($vehicleInfo['inv_color']) ? ' input_error' : "";
+                    $classificationIdErr = empty($vehicleInfo['classification_id']) ? ' input_error' : "";
                     if(empty($validPrice)){
                         $invPriceErr = ' input_error';
-                        $vehicleInfo['invPrice'] = '';
+                        $vehicleInfo['inv_price'] = '';
                     } 
                     else{
                         $invPriceErr = "";
@@ -229,14 +229,14 @@ session_start();
                 $outcome = updateVehicle($vehicleInfo);
                 // Check and report the result
                 if($outcome === 1){
-                    $_SESSION['message'] = "The $vehicleInfo[invMake] $vehicleInfo[invModel] was successfully updated";
+                    $_SESSION['message'] = "The $vehicleInfo[inv_make] $vehicleInfo[inv_model] was successfully updated";
                     $_SESSION['notificationType']  = 'success_message';
                     header("Location: " . ROOT_URI . "controllers/vehicles/");
                     exit;
                 } else {
                     // Get the array of classifications. This is needed for almost every view
                     $classifications = getClassifications();
-                    $message = "Error: the $vehicleInfo[invMake] $vehicleInfo[invModel] was not updated.";
+                    $message = "Error: the $vehicleInfo[inv_make] $vehicleInfo[inv_model] was not updated.";
                     $notificationType = 'error_message';
                     include ABS_ROOT_FILE_PATH . '/views/vehicle_update.php';
                     exit;
@@ -247,8 +247,8 @@ session_start();
         case 'view_delete_vehicle':
             processAdminRequests(function (){
                 // Sanitize and store the data
-                $invId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-                $vehicleInfo = getInvItemInfo($invId);
+                $inv_id = filter_input(INPUT_GET, 'inv_id', FILTER_VALIDATE_INT);
+                $vehicleInfo = getInvItemInfo($inv_id);
                 if (empty($vehicleInfo)) {
                     $message = 'Sorry, no vehicle information could be found.';
                     $notificationType =  ' error_message';
@@ -269,21 +269,21 @@ session_start();
             //Verify credentials 
             processAdminRequests(function (){
                 // Sanitize and store the data
-                $invMake = filter_input(INPUT_POST, 'invMake', FILTER_SANITIZE_STRING);
-                $invModel = filter_input(INPUT_POST, 'invModel', FILTER_SANITIZE_STRING);
-                $invId = filter_input(INPUT_POST, 'invId', FILTER_SANITIZE_NUMBER_INT);
+                $inv_make = filter_input(INPUT_POST, 'inv_make', FILTER_SANITIZE_STRING);
+                $inv_model = filter_input(INPUT_POST, 'inv_model', FILTER_SANITIZE_STRING);
+                $inv_id = filter_input(INPUT_POST, 'inv_id', FILTER_SANITIZE_NUMBER_INT);
                 // Send the request to the vehicles model
-                $deleteResult = deleteVehicle($invId);
+                $deleteResult = deleteVehicle($inv_id);
                 if ($deleteResult) {
                     //Also delete the images here ******
-                    $message = "Congratulations the, $invMake $invModel was	successfully deleted, please manualy remove the images from the server";
+                    $message = "Congratulations the, $inv_make $inv_model was	successfully deleted, please manualy remove the images from the server";
                     $_SESSION['message'] = $message;
                     $_SESSION['notificationType'] = 'success_message';
                     header('location: ' . ROOT_URI . 'controllers/vehicles/');
                     exit;
                 } 
                 else {
-                    $message = "Error: $invMake $invModel was not deleted";
+                    $message = "Error: $inv_make $inv_model was not deleted";
                     $_SESSION['message'] = $message;
                     $_SESSION['notificationType'] = 'error_message';
                     header('location: ' . ROOT_URI . 'controllers/vehicles/');
@@ -293,10 +293,10 @@ session_start();
             break;
         //Renders a view with all the vehicles for a specified classification
         case 'classification':
-            $classificationName = filter_input(INPUT_GET, 'classificationName', FILTER_SANITIZE_STRING);
-            $vehicles = getVehiclesByClassification($classificationName);
+            $classification_name = filter_input(INPUT_GET, 'classification_name', FILTER_SANITIZE_STRING);
+            $vehicles = getVehiclesByClassification($classification_name);
             if(!count($vehicles)){
-                $message = "Sorry, no $classificationName vehicles could be found.";
+                $message = "Sorry, no $classification_name vehicles could be found.";
                 $notificationType = 'error_message';
             } 
             // Get the array of classifications. This is needed for almost every view
@@ -306,8 +306,8 @@ session_start();
             break;
         //Renders the vehicle details page if a specific vehicle
         case 'view_vehicle_details':
-            $invId = filter_input(INPUT_GET, 'invId', FILTER_VALIDATE_INT);
-            $vehicleInfo = getInvItemInfo($invId);
+            $inv_id = filter_input(INPUT_GET, 'inv_id', FILTER_VALIDATE_INT);
+            $vehicleInfo = getInvItemInfo($inv_id);
             //Check that the vehicle information was found
             if (empty($vehicleInfo)) {
                 $message = 'Sorry, no vehicle information could be found.';
@@ -315,8 +315,8 @@ session_start();
             }
             else{
                 //Get all the vehicle images
-                $primaryImage = getVehiclePrimaryImage($invId);
-                $thumbnails = getVehicleThumbnails($invId);
+                $primaryImage = getVehiclePrimaryImage($inv_id);
+                $thumbnails = getVehicleThumbnails($inv_id);
             }
             // Get the array of classifications. This is needed for almost every view
             $classifications = getClassifications();

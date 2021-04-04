@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 03, 2021 at 11:12 AM
+-- Generation Time: Apr 03, 2021 at 07:17 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 7.4.12
 
@@ -21,6 +21,19 @@ SET time_zone = "+00:00";
 -- Database: `eaglemotors`
 --
 
+
+-- --------------------------------------------------------
+--
+-- Delete tables if they exist
+--
+DROP TABLE IF EXISTS `appointments`;
+DROP TABLE IF EXISTS `clients`;
+DROP TABLE IF EXISTS `images`;
+DROP TABLE IF EXISTS `inventory`;
+DROP TABLE IF EXISTS `carclassification`;
+
+
+
 -- --------------------------------------------------------
 
 --
@@ -28,14 +41,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `appointments` (
-  `appointmentId` int(11) NOT NULL,
-  `appointmentDate` date NOT NULL,
-  `appointmentTime` time NOT NULL,
-  `clientFirstname` varchar(50) NOT NULL,
-  `clientPhoneNumber` varchar(20) DEFAULT NULL,
-  `clientId` int(10) UNSIGNED DEFAULT NULL,
-  `invId` int(11) UNSIGNED NOT NULL
+  `appointment_id` int(11) NOT NULL,
+  `appointment_date` date NOT NULL,
+  `appointment_time` time NOT NULL,
+  `client_first_name` varchar(50) NOT NULL,
+  `client_phone_number` varchar(20) DEFAULT NULL,
+  `client_id` int(10) UNSIGNED DEFAULT NULL,
+  `inv_id` int(11) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 -- --------------------------------------------------------
 
@@ -44,15 +58,15 @@ CREATE TABLE `appointments` (
 --
 
 CREATE TABLE `carclassification` (
-  `classificationId` int(11) NOT NULL,
-  `classificationName` varchar(30) NOT NULL
+  `classification_id` int(11) NOT NULL,
+  `classification_name` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `carclassification`
 --
 
-INSERT INTO `carclassification` (`classificationId`, `classificationName`) VALUES
+INSERT INTO `carclassification` (`classification_id`, `classification_name`) VALUES
 (1, 'SUV'),
 (2, 'Classic'),
 (3, 'Sports'),
@@ -66,15 +80,14 @@ INSERT INTO `carclassification` (`classificationId`, `classificationName`) VALUE
 --
 
 CREATE TABLE `clients` (
-  `clientId` int(10) UNSIGNED NOT NULL,
-  `clientFirstname` varchar(15) NOT NULL,
-  `clientLastname` varchar(25) NOT NULL,
-  `clientEmail` varchar(40) NOT NULL,
-  `clientPassword` varchar(255) NOT NULL,
-  `clientLevel` enum('1','2','3') NOT NULL DEFAULT '1',
+  `client_id` int(10) UNSIGNED NOT NULL,
+  `client_first_name` varchar(15) NOT NULL,
+  `client_last_name` varchar(25) NOT NULL,
+  `client_email` varchar(40) NOT NULL,
+  `client_password` varchar(255) NOT NULL,
+  `client_level` enum('1','2','3') NOT NULL DEFAULT '1',
   `comment` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 -- --------------------------------------------------------
 
@@ -83,19 +96,19 @@ CREATE TABLE `clients` (
 --
 
 CREATE TABLE `images` (
-  `imgId` int(10) UNSIGNED NOT NULL,
-  `invId` int(11) UNSIGNED NOT NULL,
-  `imgName` varchar(100) CHARACTER SET latin1 NOT NULL,
-  `imgPath` varchar(150) CHARACTER SET latin1 NOT NULL,
-  `imgDate` timestamp NOT NULL DEFAULT current_timestamp(),
-  `imgPrimary` tinyint(1) NOT NULL DEFAULT 0
+  `img_id` int(10) UNSIGNED NOT NULL,
+  `inv_id` int(11) UNSIGNED NOT NULL,
+  `img_name` varchar(100) CHARACTER SET latin1 NOT NULL,
+  `img_path` varchar(150) CHARACTER SET latin1 NOT NULL,
+  `img_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `img_primary` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `images`
 --
 
-INSERT INTO `images` (`imgId`, `invId`, `imgName`, `imgPath`, `imgDate`, `imgPrimary`) VALUES
+INSERT INTO `images` (`img_id`, `inv_id`, `img_name`, `img_path`, `img_date`, `img_primary`) VALUES
 (95, 1, 'jeep-wrangler.jpg', 'images/vehicles/jeep-wrangler.jpg', '2021-03-22 19:39:41', 1),
 (96, 1, 'jeep-wrangler-tn.jpg', 'images/vehicles/jeep-wrangler-tn.jpg', '2021-03-22 19:39:41', 1),
 (97, 1, 'jeep-wrangler-2.jpeg', 'images/vehicles/jeep-wrangler-2.jpeg', '2021-03-22 19:40:13', 0),
@@ -146,21 +159,21 @@ INSERT INTO `images` (`imgId`, `invId`, `imgName`, `imgPath`, `imgDate`, `imgPri
 --
 
 CREATE TABLE `inventory` (
-  `invId` int(11) UNSIGNED NOT NULL,
-  `invMake` varchar(30) NOT NULL,
-  `invModel` varchar(30) NOT NULL,
-  `invDescription` text DEFAULT NULL,
-  `invPrice` decimal(10,2) NOT NULL,
-  `invStock` smallint(6) NOT NULL,
-  `invColor` varchar(20) NOT NULL,
-  `classificationId` int(11) NOT NULL
+  `inv_id` int(11) UNSIGNED NOT NULL,
+  `inv_make` varchar(30) NOT NULL,
+  `inv_model` varchar(30) NOT NULL,
+  `inv_description` text DEFAULT NULL,
+  `inv_price` decimal(10,2) NOT NULL,
+  `inv_stock` smallint(6) NOT NULL,
+  `inv_color` varchar(20) NOT NULL,
+  `classification_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `inventory`
 --
 
-INSERT INTO `inventory` (`invId`, `invMake`, `invModel`, `invDescription`, `invPrice`, `invStock`, `invColor`, `classificationId`) VALUES
+INSERT INTO `inventory` (`inv_id`, `inv_make`, `inv_model`, `inv_description`, `inv_price`, `inv_stock`, `inv_color`, `classification_id`) VALUES
 (1, 'Jeep ', 'Wrangler', 'The Jeep Wrangler is small and compact with enough power to get you where you want to go. Its great for everyday driving as well as offroading weather that be on the the rocks or in the mud!', '28045.00', 4, 'Orange', 1),
 (2, 'Ford', 'Model T', 'The Ford Model T can be a bit tricky to drive. It was the first car to be put into production. You can get it in any color you want as long as it\'s black.', '30000.00', 2, 'Black', 2),
 (3, 'Lamborghini', 'Adventador', 'This V-12 engine packs a punch in this sporty car. Make sure you wear your seatbelt and obey all traffic laws. ', '417650.00', 5, 'White', 3),
@@ -185,36 +198,38 @@ INSERT INTO `inventory` (`invId`, `invMake`, `invModel`, `invDescription`, `invP
 -- Indexes for table `appointments`
 --
 ALTER TABLE `appointments`
-  ADD PRIMARY KEY (`appointmentId`),
-  ADD KEY `invId` (`invId`);
+  ADD PRIMARY KEY (`appointment_id`),
+  ADD KEY `appointments_fk_1` (`inv_id`);
 
 --
 -- Indexes for table `carclassification`
 --
 ALTER TABLE `carclassification`
-  ADD PRIMARY KEY (`classificationId`);
+  ADD PRIMARY KEY (`classification_id`);
 
 --
 -- Indexes for table `clients`
 --
 ALTER TABLE `clients`
-  ADD PRIMARY KEY (`clientId`),
-  ADD UNIQUE KEY `clientEmail` (`clientEmail`);
+  ADD PRIMARY KEY (`client_id`),
+  ADD UNIQUE KEY `client_email` (`client_email`);
 
 --
 -- Indexes for table `images`
 --
 ALTER TABLE `images`
-  ADD PRIMARY KEY (`imgId`),
-  ADD UNIQUE KEY `imgPath` (`imgPath`),
-  ADD KEY `images_ibfk_1` (`invId`);
+  ADD PRIMARY KEY (`img_id`),
+  ADD UNIQUE KEY `img_name` (`img_name`),
+  ADD UNIQUE KEY `img_path` (`img_path`),
+  ADD KEY `images_fk_1` (`inv_id`);
 
 --
 -- Indexes for table `inventory`
 --
 ALTER TABLE `inventory`
-  ADD PRIMARY KEY (`invId`),
-  ADD KEY `classificationId` (`classificationId`);
+  ADD PRIMARY KEY (`inv_id`),
+  ADD UNIQUE KEY `inv_make` (`inv_make`,`inv_model`),
+  ADD KEY `inventory_fk_1` (`classification_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -224,31 +239,31 @@ ALTER TABLE `inventory`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointmentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `carclassification`
 --
 ALTER TABLE `carclassification`
-  MODIFY `classificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `classification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `clientId` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `client_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `images`
 --
 ALTER TABLE `images`
-  MODIFY `imgId` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
+  MODIFY `img_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
 
 --
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `invId` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `inv_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- Constraints for dumped tables
@@ -258,19 +273,19 @@ ALTER TABLE `inventory`
 -- Constraints for table `appointments`
 --
 ALTER TABLE `appointments`
-  ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`invId`) REFERENCES `inventory` (`invId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `appointments_fk_1` FOREIGN KEY (`inv_id`) REFERENCES `inventory` (`inv_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `images`
 --
 ALTER TABLE `images`
-  ADD CONSTRAINT `images_ibfk_1` FOREIGN KEY (`invId`) REFERENCES `inventory` (`invId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `images_fk_1` FOREIGN KEY (`inv_id`) REFERENCES `inventory` (`inv_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `inventory`
 --
 ALTER TABLE `inventory`
-  ADD CONSTRAINT `inventory_ibfk_1` FOREIGN KEY (`classificationId`) REFERENCES `carclassification` (`classificationId`);
+  ADD CONSTRAINT `inventory_fk_1` FOREIGN KEY (`classification_id`) REFERENCES `carclassification` (`classification_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

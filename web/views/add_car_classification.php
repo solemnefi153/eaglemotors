@@ -5,7 +5,7 @@
         exit;
     }
     //Check that the user has proper rights
-    if ($_SESSION['clientData']['clientLevel'] < 2) {
+    if ($_SESSION['clientData']['client_level'] < 2) {
     header('location: '. ROOT_URI);
     exit;
     }
@@ -29,10 +29,10 @@
                     <form class='custom_form' method='POST' action='<?php echo ROOT_URI; ?>controllers/vehicles/'>
                         <h1 class='form_title'>Add classification</h1>
                         <div>
-                            <label for='classificationName'>Classification Name</label>
+                            <label for='classification_name'>Classification Name</label>
                             <span class='required'>*</span>
                         </div>
-                        <input type="text" class="form_input <?php if(isset($classificationNameErr)) echo $classificationNameErr;?>" id="classificationName"  name="classificationName" value='<?php if(isset($classificationName)) echo $classificationName;?>' required>
+                        <input type="text" class="form_input <?php if(isset($classificationNameErr)) echo $classificationNameErr;?>" id="classification_name"  name="classification_name" value='<?php if(isset($classification_name)) echo $classification_name;?>' required>
                         <span class='required'>Required field*</span>
                         <input type="submit" class="primary_btn" value="Add Classification">
                         <input type="hidden" name="action" value="addCarClassification">

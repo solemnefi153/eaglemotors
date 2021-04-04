@@ -10,7 +10,7 @@
             //Check if the active variable is set to true
             if($_SESSION['loggedin']){
                 //Check if the session has proper wrights to access the vehicles controller 
-                if($_SESSION['clientData']['clientLevel'] > 1){
+                if($_SESSION['clientData']['client_level'] > 1){
                     //If a callback function was passed call the call back function
                     if($callback != NULL){
                         $callback();
@@ -43,7 +43,7 @@
             //Check if the active variable is set to true
             if($_SESSION['loggedin']){
                 //Check if the session has proper wrights to access the vehicles controller 
-                if($_SESSION['clientData']['clientLevel'] > 1){
+                if($_SESSION['clientData']['client_level'] > 1){
                     //If a callback function was passed call the call back function
                     if($callback != NULL){
                         $callback();

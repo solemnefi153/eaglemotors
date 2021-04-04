@@ -7,7 +7,7 @@
         //Check if there is a curent session and if the curren user has access rights view and  modify the appointment
         if(isset($_SESSION['clientData'])){
             //The client level has to be greated that 1 or the client Id associated with the appointment needs to be the same than the user currently logged in
-            if($_SESSION['clientData']['clientLevel'] > 1 || $_SESSION['clientData']['clientId'] == $appointmentInfo['clientId']){
+            if($_SESSION['clientData']['client_level'] > 1 || $_SESSION['clientData']['client_id'] == $appointmentInfo['client_id']){
                 $callback();
                 exit;
             }

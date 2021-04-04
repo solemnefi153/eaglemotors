@@ -66,5 +66,13 @@
         }
         return false;
     }
+    //Validate the format of a name or last name
+    function validateNameOrLastName($nameOrLastname){
+        if($nameOrLastname == ''){
+            return false;
+        }
+        $pattern = "/^[a-zA-Z ,.'-]+$/";
+        return preg_match($pattern, $nameOrLastname);
+    }
 
 ?>

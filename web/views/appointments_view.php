@@ -11,7 +11,7 @@
         <title>Appointment Management | Eagle Motors, LLC.</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel='stylesheet' href='<?php echo ROOT_URI; ?>public/css/general_styles.css' media='screen'>
-        <link rel='stylesheet' href='<?php echo ROOT_URI; ?>public/css/manage_appointments_styles.css' media='screen'>
+        <link rel='stylesheet' href='<?php echo ROOT_URI; ?>public/css/custom_table_styles.css' media='screen'>
         <script src='<?php echo ROOT_URI; ?>public/js/appointmentCancelation.js' defer ></script>
         <link href="<?php echo ROOT_URI; ?>public/images/site/favicon.ico" rel="icon" type="image/x-icon" />
     </head>
@@ -37,12 +37,12 @@
                             $html .= "  </tr>";
                             foreach($upcomingAppointments as $appointment){
                                 $html .= "  <tr>";
-                                $html .= "      <td class='small_td'>$appointment[clientFirstname]</td>";
-                                $html .= "      <td class='medium_td'>$appointment[invMake] $appointment[invModel]</td>";
-                                $html .= "      <td class='small_td'>$appointment[appointmentDate]</td>";
-                                $html .= "      <td class='small_td'>$appointment[appointmentTime]</td>";
-                                $html .= "      <td class='medium_td'>$appointment[clientPhoneNumber]</td>";
-                                $html .= "      <td class='buttons_td'><a class='primary_btn' href='" . ROOT_URI . "controllers/appointments/?action=view_update_appointment&appointmentId=$appointment[appointmentId]' title='Modify Appointment'>Modify</a> <a class='danger_btn' href='" . ROOT_URI . "controllers/appointments/?action=cancelAppointment&appointmentId=$appointment[appointmentId]' title='Cancel Appointment' onclick='confirmAppointmentCancelation(event)'>Cancel</a></td>";
+                                $html .= "      <td class='small_td'>$appointment[client_first_name]</td>";
+                                $html .= "      <td class='medium_td'>$appointment[inv_make] $appointment[inv_model]</td>";
+                                $html .= "      <td class='small_td'>$appointment[appointment_date]</td>";
+                                $html .= "      <td class='small_td'>$appointment[appointment_time]</td>";
+                                $html .= "      <td class='medium_td'>$appointment[client_phone_number]</td>";
+                                $html .= "      <td class='buttons_td'><a class='primary_btn' href='" . ROOT_URI . "controllers/appointments/?action=view_update_appointment&appointment_id=$appointment[appointment_id]' title='Modify Appointment'>Modify</a> <a class='danger_btn' href='" . ROOT_URI . "controllers/appointments/?action=cancelAppointment&appointment_id=$appointment[appointment_id]' title='Cancel Appointment' onclick='confirmAppointmentCancelation(event)'>Cancel</a></td>";
                                 $html .= "  </tr>";
                             }
                             $html .= "</table>";
@@ -65,12 +65,12 @@
                             $html .= "  </tr>";
                             foreach($pastAppointments as $appointment){
                                 $html .= "  <tr>";
-                                $html .= "      <td class='small_td'>$appointment[clientFirstname]</td>";
-                                $html .= "      <td class='medium_td'>$appointment[invMake] $appointment[invModel]</td>";
-                                $html .= "      <td class='small_td'>$appointment[appointmentDate]</td>";
-                                $html .= "      <td class='small_td'>$appointment[appointmentTime]</td>";
-                                $html .= "      <td class='medium_td'>$appointment[clientPhoneNumber]</td>";
-                                $html .= "      <td class='buttons_td'><a  class='danger_btn' href='" . ROOT_URI . "controllers/appointments/?action=cancelAppointment&appointmentId=$appointment[appointmentId]' title='Delete Appointment' onclick='confirmAppointmentCancelation(event)'>Delete</a></td>";
+                                $html .= "      <td class='small_td'>$appointment[client_first_name]</td>";
+                                $html .= "      <td class='medium_td'>$appointment[inv_make] $appointment[inv_model]</td>";
+                                $html .= "      <td class='small_td'>$appointment[appointment_date]</td>";
+                                $html .= "      <td class='small_td'>$appointment[appointment_time]</td>";
+                                $html .= "      <td class='medium_td'>$appointment[client_phone_number]</td>";
+                                $html .= "      <td class='buttons_td'><a  class='danger_btn' href='" . ROOT_URI . "controllers/appointments/?action=cancelAppointment&appointment_id=$appointment[appointment_id]' title='Delete Appointment' onclick='confirmAppointmentCancelation(event)'>Delete</a></td>";
                                 $html .= "  </tr>";
                             }
                             $html .= "</table>";

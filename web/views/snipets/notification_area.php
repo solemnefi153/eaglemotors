@@ -1,4 +1,3 @@
-
 <div  class='notification_area'>
    <span id='notificationMessage' class='
    <?php 
@@ -20,4 +19,3 @@
    ?>
    </span>
 </div>
-

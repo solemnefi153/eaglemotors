@@ -1,23 +1,23 @@
 <?php 
-    /*
-        This is the car accounts model
-    */
+    /*************************************************/
+    /*           This is the accounts model          */
+    /*************************************************/ 
     //This function will create a new account (Client) in the database
-    function regClient($clientFirstname, $clientLastname, $clientEmail, $clientPassword){
+    function regClient($client_first_name, $client_last_name, $client_email, $client_password){
         // Create a connection object using the eaglemotors connection function
         $db = eaglemotorsConnect();
         // The SQL statement
-        $sql = 'INSERT INTO clients (clientFirstname, clientLastname,clientEmail, clientPassword)
-            VALUES (:clientFirstname, :clientLastname, :clientEmail, :clientPassword)';
+        $sql = 'INSERT INTO clients (client_first_name, client_last_name, client_email, client_password)
+            VALUES (:client_first_name, :client_last_name, :client_email, :client_password)';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next four lines replace the placeholders in the SQL
         // statement with the actual values in the variables
         // and tells the database the type of data it is
-        $stmt->bindValue(':clientFirstname', $clientFirstname, PDO::PARAM_STR);
-        $stmt->bindValue(':clientLastname', $clientLastname, PDO::PARAM_STR);
-        $stmt->bindValue(':clientEmail', $clientEmail, PDO::PARAM_STR);
-        $stmt->bindValue(':clientPassword', $clientPassword, PDO::PARAM_STR);
+        $stmt->bindValue(':client_first_name', $client_first_name, PDO::PARAM_STR);
+        $stmt->bindValue(':client_last_name', $client_last_name, PDO::PARAM_STR);
+        $stmt->bindValue(':client_email', $client_email, PDO::PARAM_STR);
+        $stmt->bindValue(':client_password', $client_password, PDO::PARAM_STR);
         // Insert the data
         $stmt->execute();
         // Ask how many rows changed as a result of our insert
@@ -28,18 +28,18 @@
         return $rowsChanged;
     }
     //Check if an account is used by a user with a different ID that the one that was passed to this function
-    function findOtherAccountUsingThisEmail($clientEmail, $clientId){
+    function findOtherAccountUsingThisEmail($client_email, $client_id){
         // Create a connection object using the eaglemotors connection function
         $db = eaglemotorsConnect();
         // The SQL statement
-        $sql = 'SELECT * FROM  clients WHERE clientEmail = :clientEmail AND NOT clientId = :clientId ;';
+        $sql = 'SELECT * FROM  clients WHERE client_email = :client_email AND NOT client_id = :client_id ;';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next four lines replace the placeholders in the SQL
         // statement with the actual values in the variables
         // and tells the database the type of data it is
-        $stmt->bindValue(':clientEmail', $clientEmail, PDO::PARAM_STR);
-        $stmt->bindValue(':clientId', $clientId, PDO::PARAM_INT);
+        $stmt->bindValue(':client_email', $client_email, PDO::PARAM_STR);
+        $stmt->bindValue(':client_id', $client_id, PDO::PARAM_INT);
         // Insert the data
         $stmt->execute();
         // Fetch all the rows that were found
@@ -50,38 +50,38 @@
         return $clientData;
     }
     // Get client data based on an email address
-    function getClient($clientEmail){
-         // Create a connection object using the eaglemotors connection function
-         $db = eaglemotorsConnect();
-         // The SQL statement
-         $sql = 'SELECT * FROM  clients WHERE clientEmail = :clientEmail;';
-         // Create the prepared statement using the eaglemotors connection
-         $stmt = $db->prepare($sql);
-         // The next four lines replace the placeholders in the SQL
-         // statement with the actual values in the variables
-         // and tells the database the type of data it is
-         $stmt->bindValue(':clientEmail', $clientEmail, PDO::PARAM_STR);
-         // Insert the data
-         $stmt->execute();
-         // Fetch one row form the results
-         $clientData = $stmt->fetch(); 
-         // Close the database interaction
-         $stmt->closeCursor();
-         // Return the  client data
-         return $clientData;
-    }
-    // Get client data based on an email address
-    function getClientById($clientId){
+    function getClient($client_email){
         // Create a connection object using the eaglemotors connection function
         $db = eaglemotorsConnect();
         // The SQL statement
-        $sql = 'SELECT * FROM  clients WHERE clientId = :clientId;';
+        $sql = 'SELECT * FROM  clients WHERE client_email = :client_email;';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next four lines replace the placeholders in the SQL
         // statement with the actual values in the variables
         // and tells the database the type of data it is
-        $stmt->bindValue(':clientId', $clientId, PDO::PARAM_STR);
+        $stmt->bindValue(':client_email', $client_email, PDO::PARAM_STR);
+        // Insert the data
+        $stmt->execute();
+        // Fetch one row form the results
+        $clientData = $stmt->fetch(); 
+        // Close the database interaction
+        $stmt->closeCursor();
+        // Return the  client data
+        return $clientData;
+    }
+    // Get client data based on an email address
+    function getClientById($client_id){
+        // Create a connection object using the eaglemotors connection function
+        $db = eaglemotorsConnect();
+        // The SQL statement
+        $sql = 'SELECT * FROM  clients WHERE client_id = :client_id;';
+        // Create the prepared statement using the eaglemotors connection
+        $stmt = $db->prepare($sql);
+        // The next four lines replace the placeholders in the SQL
+        // statement with the actual values in the variables
+        // and tells the database the type of data it is
+        $stmt->bindValue(':client_id', $client_id, PDO::PARAM_STR);
         // Insert the data
         $stmt->execute();
         // Fetch one row form the results
@@ -92,20 +92,20 @@
         return $clientData;
     }
     //Update client information
-    function updateClient($clientFirstname, $clientLastname, $clientEmail, $clientId){
+    function updateClient($client_first_name, $client_last_name, $client_email, $client_id){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'UPDATE clients SET clientFirstname = :clientFirstname, clientLastname = :clientLastname, 
-	        clientEmail = :clientEmail WHERE clientId = :clientId';
+        $sql = 'UPDATE clients SET client_first_name = :client_first_name, client_last_name = :client_last_name, 
+	        client_email = :client_email WHERE client_id = :client_id';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next four lines replace the placeholders in the SQL
         // statement with the actual values in the variables
         // and tells the database the type of data it is
-        $stmt->bindValue(':clientFirstname', $clientFirstname, PDO::PARAM_STR);
-        $stmt->bindValue(':clientLastname', $clientLastname, PDO::PARAM_STR);
-        $stmt->bindValue(':clientEmail', $clientEmail, PDO::PARAM_STR);
-        $stmt->bindValue(':clientId', $clientId, PDO::PARAM_INT);
+        $stmt->bindValue(':client_first_name', $client_first_name, PDO::PARAM_STR);
+        $stmt->bindValue(':client_last_name', $client_last_name, PDO::PARAM_STR);
+        $stmt->bindValue(':client_email', $client_email, PDO::PARAM_STR);
+        $stmt->bindValue(':client_id', $client_id, PDO::PARAM_INT);
         // Update  the client 
         $stmt->execute();
         // Ask how many rows changed as a result of the update
@@ -116,17 +116,17 @@
         return $rowsChanged;
     }
     //Update client password
-    function updateClientPassword($clientPassword, $clientId){
+    function updateClientPassword($client_password, $client_id){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'UPDATE clients SET clientPassword = :clientPassword WHERE clientId = :clientId;';
+        $sql = 'UPDATE clients SET client_password = :client_password WHERE client_id = :client_id;';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next four lines replace the placeholders in the SQL
         // statement with the actual values in the variables
         // and tells the database the type of data it is
-        $stmt->bindValue(':clientPassword', $clientPassword, PDO::PARAM_STR);
-        $stmt->bindValue(':clientId', $clientId, PDO::PARAM_INT);
+        $stmt->bindValue(':client_password', $client_password, PDO::PARAM_STR);
+        $stmt->bindValue(':client_id', $client_id, PDO::PARAM_INT);
         // Update  the client 
         $stmt->execute();
         // Ask how many rows changed as a result of the update

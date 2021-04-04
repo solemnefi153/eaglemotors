@@ -1,25 +1,25 @@
 <?php 
-    /*
-        This is the car Vehilces model
-    */
+    /*************************************************/
+    /*        This is the car Vehilces model         */
+    /*************************************************/
     //Adds a car into the database
     function addCarToInvelntory($newVehicle){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'INSERT INTO inventory (invMake, invModel, invDescription, invPrice, invStock, invColor, classificationId)
-            VALUES (:invMake, :invModel, :invDescription, :invPrice, :invStock, :invColor, :classificationId)';
+        $sql = 'INSERT INTO inventory (inv_make, inv_model, inv_description, inv_price, inv_stock, inv_color, classification_id)
+            VALUES (:inv_make, :inv_model, :inv_description, :inv_price, :inv_stock, :inv_color, :classification_id)';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next four lines replace the placeholders in the SQL
         // statement with the actual values in the variables
         // and tells the database the type of data it is
-        $stmt->bindValue(':invMake', $newVehicle['invMake'], PDO::PARAM_STR);
-        $stmt->bindValue(':invModel', $newVehicle['invModel'], PDO::PARAM_STR);
-        $stmt->bindValue(':invDescription', $newVehicle['invDescription'], PDO::PARAM_STR);
-        $stmt->bindValue(':invPrice', $newVehicle['invPrice'], PDO::PARAM_STR);
-        $stmt->bindValue(':invStock', $newVehicle['invStock'], PDO::PARAM_INT);
-        $stmt->bindValue(':invColor', $newVehicle['invColor'], PDO::PARAM_STR);
-        $stmt->bindValue(':classificationId', $newVehicle['classificationId'], PDO::PARAM_INT);
+        $stmt->bindValue(':inv_make', $newVehicle['inv_make'], PDO::PARAM_STR);
+        $stmt->bindValue(':inv_model', $newVehicle['inv_model'], PDO::PARAM_STR);
+        $stmt->bindValue(':inv_description', $newVehicle['inv_description'], PDO::PARAM_STR);
+        $stmt->bindValue(':inv_price', $newVehicle['inv_price'], PDO::PARAM_STR);
+        $stmt->bindValue(':inv_stock', $newVehicle['inv_stock'], PDO::PARAM_INT);
+        $stmt->bindValue(':inv_color', $newVehicle['inv_color'], PDO::PARAM_STR);
+        $stmt->bindValue(':classification_id', $newVehicle['classification_id'], PDO::PARAM_INT);
         // Insert the data
         $stmt->execute();
         // Ask how many rows changed as a result of our insert
@@ -33,7 +33,7 @@
     function getVehicles(){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'SELECT invId, invMake, invModel FROM inventory';
+        $sql = 'SELECT inv_id, inv_make, inv_model FROM inventory';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // Run the query 
@@ -45,17 +45,17 @@
         // Return the rows that we got from the query
         return $invInfo; 
     }
-    // Get vehicles by classificationId 
-    function getInventoryByClassification($classificationId){ 
+    // Get vehicles by classification_id 
+    function getInventoryByClassification($classification_id){ 
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = ' SELECT * FROM inventory WHERE classificationId = :classificationId'; 
+        $sql = ' SELECT * FROM inventory WHERE classification_id = :classification_id'; 
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next  line replaces the placeholder in the SQL
         // statement with the actual value in the variable
         // and tells the database the type of data it is
-        $stmt->bindValue(':classificationId', $classificationId, PDO::PARAM_INT); 
+        $stmt->bindValue(':classification_id', $classification_id, PDO::PARAM_INT); 
         // Run the query 
         $stmt->execute();
         // Grab all the rows that were returnded from the query
@@ -66,16 +66,16 @@
         return $inventory; 
     }
     //Get vehicles by classification name
-    function getVehiclesByClassification($classificationName){
+    function getVehiclesByClassification($classification_name){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'SELECT * FROM inventory JOIN images ON inventory.invId = images.invId WHERE classificationId IN (SELECT classificationId FROM carclassification WHERE classificationName = :classificationName) AND imgPrimary = 1 AND imgPath LIKE "%-tn%";';
+        $sql = 'SELECT * FROM inventory JOIN images ON inventory.inv_id = images.inv_id WHERE classification_id IN (SELECT classification_id FROM carclassification WHERE classification_name = :classification_name) AND img_primary = 1 AND img_path LIKE "%-tn%";';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next four lines replace the placeholders in the SQL
         // statement with the actual values in the variables
         // and tells the database the type of data it is
-        $stmt->bindValue(':classificationName', $classificationName, PDO::PARAM_STR);
+        $stmt->bindValue(':classification_name', $classification_name, PDO::PARAM_STR);
         // Insert the data
         $stmt->execute();
         // Get the all the rows from the results
@@ -85,17 +85,17 @@
         // Return all the rows that were returned in the query
         return $inventory; 
     }
-    // Get vehicle information by invId
-    function getInvItemInfo($invId){
+    // Get vehicle information by inv_id
+    function getInvItemInfo($inv_id){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); ;
-        $sql = 'SELECT * FROM inventory WHERE invId = :invId';
+        $sql = 'SELECT * FROM inventory WHERE inv_id = :inv_id';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next four lines replace the placeholders in the SQL
         // statement with the actual values in the variables
         // and tells the database the type of data it is
-        $stmt->bindValue(':invId', $invId, PDO::PARAM_INT);
+        $stmt->bindValue(':inv_id', $inv_id, PDO::PARAM_INT);
         // Insert the data
         $stmt->execute();
         // Get the invenroty information form the query
@@ -109,23 +109,23 @@
    function updateVehicle($vehicleInfo){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'UPDATE inventory SET invMake = :invMake, invModel = :invModel, 
-	        invDescription = :invDescription, invPrice = :invPrice, 
-	        invStock = :invStock, invColor = :invColor, 
-	        classificationId = :classificationId WHERE invId = :invId';
+        $sql = 'UPDATE inventory SET inv_make = :inv_make, inv_model = :inv_model, 
+	        inv_description = :inv_description, inv_price = :inv_price, 
+	        inv_stock = :inv_stock, inv_color = :inv_color, 
+	        classification_id = :classification_id WHERE inv_id = :inv_id';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next four lines replace the placeholders in the SQL
         // statement with the actual values in the variables
         // and tells the database the type of data it is
-        $stmt->bindValue(':invMake', $vehicleInfo['invMake'], PDO::PARAM_STR);
-        $stmt->bindValue(':invModel', $vehicleInfo['invModel'], PDO::PARAM_STR);
-        $stmt->bindValue(':invDescription', $vehicleInfo['invDescription'], PDO::PARAM_STR);
-        $stmt->bindValue(':invPrice', $vehicleInfo['invPrice'], PDO::PARAM_STR);
-        $stmt->bindValue(':invStock', $vehicleInfo['invStock'], PDO::PARAM_INT);
-        $stmt->bindValue(':invColor', $vehicleInfo['invColor'], PDO::PARAM_STR);
-        $stmt->bindValue(':classificationId', $vehicleInfo['classificationId'], PDO::PARAM_INT);
-        $stmt->bindValue(':invId', $vehicleInfo['invId'], PDO::PARAM_INT);
+        $stmt->bindValue(':inv_make', $vehicleInfo['inv_make'], PDO::PARAM_STR);
+        $stmt->bindValue(':inv_model', $vehicleInfo['inv_model'], PDO::PARAM_STR);
+        $stmt->bindValue(':inv_description', $vehicleInfo['inv_description'], PDO::PARAM_STR);
+        $stmt->bindValue(':inv_price', $vehicleInfo['inv_price'], PDO::PARAM_STR);
+        $stmt->bindValue(':inv_stock', $vehicleInfo['inv_stock'], PDO::PARAM_INT);
+        $stmt->bindValue(':inv_color', $vehicleInfo['inv_color'], PDO::PARAM_STR);
+        $stmt->bindValue(':classification_id', $vehicleInfo['classification_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':inv_id', $vehicleInfo['inv_id'], PDO::PARAM_INT);
         // Update  the vehicledata
         $stmt->execute();
         // Ask how many rows changed as a result of the update
@@ -136,16 +136,16 @@
         return $rowsChanged;
    }
    //Deletes a vehicle from the database 
-   function deleteVehicle($invId) {
+   function deleteVehicle($inv_id) {
        // Create a connection object from the eaglemotors connection function
        $db = eaglemotorsConnect(); 
-       $sql = 'DELETE FROM inventory WHERE invId = :invId';
+       $sql = 'DELETE FROM inventory WHERE inv_id = :inv_id';
        // Create the prepared statement using the eaglemotors connection
        $stmt = $db->prepare($sql);
        // The next four lines replace the placeholders in the SQL
        // statement with the actual values in the variables
        // and tells the database the type of data it is
-       $stmt->bindValue(':invId', $invId, PDO::PARAM_INT);
+       $stmt->bindValue(':inv_id', $inv_id, PDO::PARAM_INT);
        // Update  the vehicledata
        $stmt->execute();
        // Ask how many rows changed as a result of our insert
@@ -155,5 +155,5 @@
        // Return the indication of success (rows changed)
        return $rowsChanged;
    }
-//    $sql = 'SELECT * FROM inventory JOIN images ON inventory.invId = images.invId WHERE inventory.invId = :invId AND imgPrimary != 0 AND imgPath LIKE "%-tn%";';
+//    $sql = 'SELECT * FROM inventory JOIN images ON inventory.inv_id = images.inv_id WHERE inventory.inv_id = :inv_id AND img_primary != 0 AND img_path LIKE "%-tn%";';
 ?>

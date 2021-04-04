@@ -20,12 +20,12 @@
             <?php require ABS_ROOT_FILE_PATH . '/views/snipets/navigation.php'; ?>
             <?php require ABS_ROOT_FILE_PATH . '/views/snipets/notification_area.php'; ?>
             <main>
-                <h1><?php echo $_SESSION['clientData']['clientFirstname'] . ' ' . $_SESSION['clientData']['clientLastname']; ?> </h1>
+                <h1><?php echo $_SESSION['clientData']['client_first_name'] . ' ' . $_SESSION['clientData']['client_last_name']; ?> </h1>
                 <p>You are logged in </p>
                 <ul>
-                    <li>First name: <?php echo $_SESSION['clientData']['clientFirstname']; ?> </li>
-                    <li>Last name: <?php echo $_SESSION['clientData']['clientLastname']; ?> </li>
-                    <li>Email: <?php echo $_SESSION['clientData']['clientEmail']; ?> </li>
+                    <li>First name: <?php echo $_SESSION['clientData']['client_first_name']; ?> </li>
+                    <li>Last name: <?php echo $_SESSION['clientData']['client_last_name']; ?> </li>
+                    <li>Email: <?php echo $_SESSION['clientData']['client_email']; ?> </li>
                 </ul>
                 <form class='custom_form' method='POST' action='<?php echo ROOT_URI; ?>controllers/accounts/'>
                     <input type="submit" class="secondary_btn" value="Update account Information">
@@ -38,11 +38,12 @@
                 <!-- This will redirect to the vehicles controller -->
                 <!-- The default case will check if there is an active session and if the session has proper rights -->
                 <?php 
-                    if($_SESSION['clientData']['clientLevel'] > 1) {
-                        echo "<p>To manage the inventory click on the button below</p>";
-                        echo "<form class='custom_form' method='POST' action='" . ROOT_URI . "controllers/vehicles/'>";
-                        echo "<input type='submit' class='secondary_btn' value='Vehicle Management'>";
-                        echo "</form>";
+                    if($_SESSION['clientData']['client_level'] > 1) {
+                        $html = "<p>To manage the inventory click on the button below</p>";
+                        $html .= "<form class='custom_form' method='POST' action='" . ROOT_URI . "controllers/vehicles/'>";
+                        $html .= "<input type='submit' class='secondary_btn' value='Vehicle Management'>";
+                        $html .= "</form>";
+                        echo $html;
                     }
                 ?>
             </main>

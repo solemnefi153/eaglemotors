@@ -3,17 +3,17 @@
     /*      This is the car classifications model    */
     /*************************************************/ 
     //This function will create a new car classification in the database
-    function addCarClassification($classificationName){
+    function addCarClassification($classification_name){
         // Create a connection object using the eaglemotors connection function
         $db = eaglemotorsConnect();
         // The SQL statement
-        $sql = 'INSERT INTO carclassification (classificationName) VALUES (:classificationName)';
+        $sql = 'INSERT INTO carclassification (classification_name) VALUES (:classification_name)';
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next four lines replace the placeholders in the SQL
         // statement with the actual values in the variables
         // and tells the database the type of data it is
-        $stmt->bindValue(':classificationName', $classificationName, PDO::PARAM_STR);
+        $stmt->bindValue(':classification_name', $classification_name, PDO::PARAM_STR);
         // Insert the data
         $stmt->execute();
         // Ask how many rows changed as a result of our insert
@@ -28,7 +28,7 @@
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
         // The SQL statement to be used with the database 
-        $sql = 'SELECT classificationName, classificationId FROM carclassification ORDER BY classificationName ASC'; 
+        $sql = 'SELECT classification_name, classification_id FROM carclassification ORDER BY classification_name ASC'; 
         // The next line creates the prepared statement using the eaglemotors connection      
         $stmt = $db->prepare($sql);
         // The next line runs the prepared statement 

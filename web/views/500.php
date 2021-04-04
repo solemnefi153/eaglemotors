@@ -10,7 +10,7 @@
         <div class='content'>
             <?php require ABS_ROOT_FILE_PATH . '/views/snipets/header.php'; ?>
             <nav>
-                <a class='nav_link' href='#' title='Go to the home page'>Home</a>
+                <a class='nav_link' href='<?php echo ROOT_URI; ?>' title='View the Eagle Motors home page'>Home</a>
             </nav>
             <main>
                 <h1>Server Error</h1>
@@ -23,4 +23,3 @@
 
     </body>
 </html>
- 

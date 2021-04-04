@@ -5,7 +5,7 @@
         exit;
     }
     //Check that the user has proper rights
-    if ($_SESSION['clientData']['clientLevel'] < 2) {
+    if ($_SESSION['clientData']['client_level'] < 2) {
     header("location: " . ROOT_URI);
     exit;
     }
@@ -29,28 +29,28 @@
             <main class='main-justified-left'>
                 <form class='custom_form' action="<?php echo ROOT_URI; ?>controllers/uploads/" method="post" enctype="multipart/form-data">
                     <h2>Add vehicle image</h2>
-                    <label for="invItem">Vehicle</label>
+                    <label for="inv_id">Vehicle</label>
                     <?php 
                         // Build the vehicles select list
                         if(isset($vehicles)){
-                            $html = '<select class="from_select" name="invId" id="invId">';
-                            $html .= "<option>Choose a Vehicle</option>";
+                            $html = '<select class="from_select" name="inv_id" id="inv_id" required>';
+                            $html .= "<option value='' disabled hidden selected>Choose a Vehicle</option>";
                             foreach ($vehicles as $vehicle) {
-                                $html .= "<option value='$vehicle[invId]'>$vehicle[invMake] $vehicle[invModel]</option>";
+                                $html .= "<option value='$vehicle[inv_id]'>$vehicle[inv_make] $vehicle[inv_model]</option>";
                             }
                             $html .= '</select>';
                             echo $html;
                         }
                     ?>
-                    <label>Main vechilce image</label>
+                    <label>Main vehicle image</label>
                     <div class='from_radio_section'>
                         <label for="priYes" class="pImage">Yes</label>
-                        <input type="radio" name="imgPrimary" id="priYes" class="pImage" value="1">
+                        <input type="radio" name="img_primary" id="priYes" class="pImage" value="1">
                         <label for="priNo" class="pImage">No</label>
-                        <input type="radio" name="imgPrimary" id="priNo" class="pImage" checked value="0">
+                        <input type="radio" name="img_primary" id="priNo" class="pImage" checked value="0">
                     </div>
                     <label>Upload Image:</label>
-                    <input class="from_file" type="file" name="file1">
+                    <input class="from_file" type="file" name="file1" accept=".png, .jpg, .jpeg" required>
                     <input type="submit" class="primary_btn  from_btn" value="Upload Image">
                     <input type="hidden" name="action" value="upload">
                 </form>
@@ -62,9 +62,9 @@
                         $html = '<ul id="image-display">';
                         foreach ($imageArray as $image) {
                             $html .= '<li>';
-                            $html .= "<img class='image_display' src='" . ROOT_URI . "$image[imgPath]' title='$image[invMake] $image[invModel] image on PHP Motors.com' alt='$image[invMake] $image[invModel] image on PHP Motors.com'>";
-                            $html .=  "<p>$image[imgName]</p>";
-                            $html .= "<a class='delete_btn' href='" . ROOT_URI . "controllers/uploads?action=delete&imgId=$image[imgId]&filename=$image[imgName]' title='Delete image'>Delete Image</a>";
+                            $html .= "<img class='image_display' src='" . ROOT_URI . "$image[img_path]' title='$image[inv_make] $image[inv_model] image on PHP Motors.com' alt='$image[inv_make] $image[inv_model] image on PHP Motors.com'>";
+                            $html .=  "<p>$image[img_name]</p>";
+                            $html .= "<a class='delete_btn' href='" . ROOT_URI . "controllers/uploads?action=delete&img_id=$image[img_id]&filename=$image[img_name]' title='Delete image'>Delete Image</a>";
                             $html .= '</li>';
                         }
                         $html .= '</ul>';
@@ -76,4 +76,3 @@
         </div>
     </body>
 </html>
-

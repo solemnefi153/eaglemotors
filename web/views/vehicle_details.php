@@ -3,8 +3,8 @@
     <head>
         <title>
             <?php
-                if(isset($vehicleInfo['invMake']) && isset($vehicleInfo['invModel'])) 
-                    echo "$vehicleInfo[invMake] $vehicleInfo[invModel]"; 
+                if(isset($vehicleInfo['inv_make']) && isset($vehicleInfo['inv_model'])) 
+                    echo "$vehicleInfo[inv_make] $vehicleInfo[inv_model]"; 
             ?>
             | Eagle Motors, LLC.
         </title>
@@ -25,26 +25,26 @@
             <main>
                 <?php
                     // Creates the necesary html to display the vehicle details page
-                    if(!empty($vehicleInfo) && isset($primaryImage['imgPath'])){
+                    if(!empty($vehicleInfo) && isset($primaryImage['img_path'])){
                         $no_found_image_link = ROOT_URI . "images/vehicles/no-image.png";
-                        $html = "<h1>Modify $vehicleInfo[invMake] $vehicleInfo[invModel]</h1>\n";
-                        $html .= "<h2>Price: $" . number_format ( $vehicleInfo['invPrice'] , 2 , "." ,  "," ) . "</h2>\n";
+                        $html = "<h1>Modify $vehicleInfo[inv_make] $vehicleInfo[inv_model]</h1>\n";
+                        $html .= "<h2>Price: $" . number_format ( $vehicleInfo['inv_price'] , 2 , "." ,  "," ) . "</h2>\n";
                         $html .= "<div id='vehicle_details_container'>\n";
                         $html .= "    <div id='vehicle-image-details'>\n";
-                        $html .= "        <img id='vehicle_img' src='". ROOT_URI . "$primaryImage[imgPath]' onerror='this.onerror=null; this.src=\"$no_found_image_link\"' alt='Image of $vehicleInfo[invMake] $vehicleInfo[invModel] on eaglemotors.com'>\n";
+                        $html .= "        <img id='vehicle_img' src='". ROOT_URI . "$primaryImage[img_path]' onerror='this.onerror=null; this.src=\"$no_found_image_link\"' alt='Image of $vehicleInfo[inv_make] $vehicleInfo[inv_model] on eaglemotors.com'>\n";
                         $html .= "        <div id='vehicle-details'>\n";
                         $html .= "            <h2>Vehicle details</h2>\n";
                         $html .= "            <hr>\n";
-                        $html .= "            <p>$vehicleInfo[invDescription]</p>\n";
+                        $html .= "            <p>$vehicleInfo[inv_description]</p>\n";
                         $html .= "            <div class='tb_row_t1'>\n";
                         $html .= "                <span>Color :</span>\n";
-                        $html .= "                <span>$vehicleInfo[invColor]</span>\n";
+                        $html .= "                <span>$vehicleInfo[inv_color]</span>\n";
                         $html .= "            </div>\n";
                         $html .= "            <div class='tb_row_t2'>\n";
                         $html .= "                <span>In Stock :</span>\n";
-                        $html .= "                <span>$vehicleInfo[invStock]</span>\n";
+                        $html .= "                <span>$vehicleInfo[inv_stock]</span>\n";
                         $html .= "            </div>\n";
-                        $html .= "            <a class='primary_btn' href='" . ROOT_URI . "controllers/appointments/?action=create_appointment_view&invId=$vehicleInfo[invId]' >Schedule a test drive</a>\n";
+                        $html .= "            <a class='primary_btn' href='" . ROOT_URI . "controllers/appointments/?action=create_appointment_view&inv_id=$vehicleInfo[inv_id]' >Schedule a test drive</a>\n";
                         $html .= "        </div>\n";
                         $html .= "    </div>\n";
                         //Creates the neceary html to display the vehicle thumbnails
@@ -55,7 +55,7 @@
                             }
                             $html .= "    <div id='vehicle-thumbnails'>\n";
                             foreach ($thumbnails as $thumbnail) {
-                                $html .= "    <img class='vehicle_details_tn' src='". ROOT_URI . "$thumbnail[imgPath]' onerror='this.onerror=null; this.src=\"$no_found_image_th_link\"' title='$thumbnail[imgName] image on PHP Motors.com' alt='$thumbnail[imgName] image on PHP Motors.com'>";
+                                $html .= "    <img class='vehicle_details_tn' src='". ROOT_URI . "$thumbnail[img_path]' onerror='this.onerror=null; this.src=\"$no_found_image_th_link\"' title='$thumbnail[img_name] image on PHP Motors.com' alt='$thumbnail[img_name] image on PHP Motors.com'>";
                             }
                             $html .= "    </div>\n"; 
                         }
