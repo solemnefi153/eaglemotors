@@ -1,5 +1,9 @@
 # Eagle Motors PHP 
 
+## Description
+
+This is a web application that has the necesary functionality for a car dealership web application. The application user MVC without a framework in PHP. This applicaiton can be set up in XAMPP or Heroku.
+
 ## XAMPP Set Up 
 
 ### Set up the application in XAMPP 
@@ -60,4 +64,21 @@ heroku pg:psql --app YOUR_APP_NAME_HERE < ./sql/heroku_eaglemotors_sharable_setu
 
 ### Set The Environment Variables For Heroku
 If this application is hosted on Heroku, go to  [heroku](https://dashboard.heroku.com/apps) and log in. Click on the name of your application and go to the Settings tab. Click on the button that says "Reveal Config Vars". Create a new variable with the Key "ENVIRONMENT" and the value of "production". Remember to click on the add button.
+
+## Current applicaiton problems
+Heroku is not allowing to upload and permanently keep static files on the server. The functionality to upload vehicle images on Heroku is not workin. I will be using [AWS S3](https://devcenter.heroku.com/articles/s3) to upload and keep my static files. 
+
+## Future work 
+The controller files use an action parameter sent through the link to trigger a specific  functionality of the controller. I will instead use the medoths (GET, POST, PUT, DELETE ) to determine the actions. <br>
+
+Also to simulate a routing system, I will create a file system that calls the corresponding controllers just as any other MVC framework. <br>
+
+The home page needs a better design, so I need to work on that as well. <br>
+
+
+
+
+
+
+
 
