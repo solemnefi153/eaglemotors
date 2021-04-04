@@ -40,7 +40,7 @@ CREATE TABLE appointments (
   appointment_id SERIAL NOT NULL PRIMARY KEY,
   appointment_date DATE NOT NULL,
   appointment_time TIME NOT NULL,
-  client_firstname VARCHAR(50) NOT NULL,
+  client_first_name VARCHAR(50) NOT NULL,
   client_phone_number VARCHAR(20) DEFAULT NULL,
   client_id INTEGER  DEFAULT NULL,
   inv_id INTEGER  NOT NULL
