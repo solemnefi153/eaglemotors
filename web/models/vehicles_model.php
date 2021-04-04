@@ -69,7 +69,7 @@
     function getVehiclesByClassification($classification_name){
         // Create a connection object from the eaglemotors connection function
         $db = eaglemotorsConnect(); 
-        $sql = 'SELECT * FROM inventory JOIN images ON inventory.inv_id = images.inv_id WHERE classification_id IN (SELECT classification_id FROM carclassification WHERE classification_name = :classification_name) AND img_primary = 1 AND img_path LIKE "%-tn%";';
+        $sql = "SELECT * FROM inventory JOIN images ON inventory.inv_id = images.inv_id WHERE classification_id IN (SELECT classification_id FROM carclassification WHERE classification_name = :classification_name) AND img_primary = 1 AND img_path LIKE '%-tn%';";
         // Create the prepared statement using the eaglemotors connection
         $stmt = $db->prepare($sql);
         // The next four lines replace the placeholders in the SQL
